@@ -1,0 +1,19 @@
+# Test harness artifacts
+_test/node_modules/
+_test/package-lock.json
+_test/screenshot-*.png
+_test/report*.json
+_test/debug-*.js
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Local env
+.env
+.env.local
+
+# Logs
+*.log

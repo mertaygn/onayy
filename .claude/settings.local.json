@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(grep -oE '\\\\`\\(prod|exec|design|art|audio|eng|ux|ui|qa|marketing|ops|liveops\\)-[a-z-]+\\\\`' .claude/agents/prod-producer.md)",
+      "Bash(read name *)",
+      "Bash([ ! -f \".claude/agents/$name.md\" ])",
+      "Bash(grep -oE '\\\\`?\\(prod|exec|design|art|audio|eng|ux|ui|qa|marketing|ops|liveops\\)-[a-z-]+\\\\`?' CLAUDE.md)",
+      "Bash(xargs -I {} basename {} .md)",
+      "Bash(node --check game.js)",
+      "Bash(node --check games/yildiz-toplama/game.js)",
+      "WebFetch(domain:store.steampowered.com)",
+      "Bash(node --check games/kabul-ediyorum/game.js)",
+      "Bash(npm --version)",
+      "Bash(npx --version)",
+      "Bash(mkdir -p .test)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(node run.js)",
+      "Bash(awk '{print \"     -\", $NF, \"\\(\" $5, \"byte\\)\"}')",
+      "Bash(mv /tmp/debug-esc.js \"/Users/evreka-stand/Desktop/ai-oyun-geliştirme-ajansı/_test/debug-esc.js\")",
+      "Bash(node debug-esc.js)",
+      "WebFetch(domain:agreeeegame.com)",
+      "WebFetch(domain:steamcommunity.com)",
+      "Bash(node --check games/onayy/game.js)",
+      "Bash(node run-onayy.js)",
+      "Bash(gh auth *)"
+    ]
+  }
+}

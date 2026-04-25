@@ -1,0 +1,8 @@
+{
+  "name": "agency-test-harness",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "puppeteer-core": "^24.42.0"
+  }
+}
