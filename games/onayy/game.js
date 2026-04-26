@@ -111,7 +111,14 @@ const I18N = {
     'gameover.bestRecord': '🏆 En iyi rekor',
     'gameover.newRecord': '🏆 YENİ REKOR',
     'gameover.restart': '[R] Tekrar Başla',
-    'gameover.loadStatus': ['Karakterler hazırlanıyor...']
+    'gameover.loadStatus': ['Karakterler hazırlanıyor...'],
+    'mode.label': 'Mod',
+    'mode.normal': 'NORMAL',
+    'mode.hardcore': 'HARDCORE',
+    'mode.normalDesc': '5 can · checkpoint var',
+    'mode.hardcoreDesc': '⚠ 1 can · checkpoint yok',
+    'gameover.modeNormal': 'Mod: NORMAL',
+    'gameover.modeHardcore': 'Mod: HARDCORE'
   },
   en: {
     'boot.title': 'USER AGREEMENT',
@@ -177,7 +184,14 @@ const I18N = {
     'gameover.bestRecord': '🏆 Best record',
     'gameover.newRecord': '🏆 NEW RECORD',
     'gameover.restart': '[R] Restart',
-    'gameover.loadStatus': ['Preparing...']
+    'gameover.loadStatus': ['Preparing...'],
+    'mode.label': 'Mode',
+    'mode.normal': 'NORMAL',
+    'mode.hardcore': 'HARDCORE',
+    'mode.normalDesc': '5 lives · checkpoint enabled',
+    'mode.hardcoreDesc': '⚠ 1 life · no checkpoint',
+    'gameover.modeNormal': 'Mode: NORMAL',
+    'gameover.modeHardcore': 'Mode: HARDCORE'
   }
 };
 
@@ -188,6 +202,15 @@ function setLang(l) {
   LANG = l;
   try { localStorage.setItem('onayy.lang', l); } catch (_) {}
 }
+
+let MODE = (() => {
+  try { return localStorage.getItem('onayy.mode') || 'normal'; } catch (_) { return 'normal'; }
+})();
+function setMode(m) {
+  MODE = m;
+  try { localStorage.setItem('onayy.mode', m); } catch (_) {}
+}
+function bestKey() { return MODE === 'hardcore' ? 'onayy.bestTimeMsHard' : 'onayy.bestTimeMs'; }
 function t(key, params) {
   let s = (I18N[LANG] && I18N[LANG][key]);
   if (s === undefined) s = I18N.tr[key];
@@ -418,12 +441,12 @@ const RunStats = {
   }
 };
 
-const BEST_KEY = 'onayy.bestTimeMs';
 function saveBestTime(ms) {
   try {
-    const prev = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
+    const k = bestKey();
+    const prev = parseInt(localStorage.getItem(k) || '0', 10);
     if (!prev || ms < prev) {
-      localStorage.setItem(BEST_KEY, ms.toString());
+      localStorage.setItem(k, ms.toString());
       return true; // yeni rekor
     }
   } catch (_) {}
@@ -431,7 +454,7 @@ function saveBestTime(ms) {
 }
 function getBestTime() {
   try {
-    const v = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
+    const v = parseInt(localStorage.getItem(bestKey()) || '0', 10);
     return v || null;
   } catch (_) { return null; }
 }
@@ -544,6 +567,40 @@ class BootScene extends Phaser.Scene {
         }
       });
     });
+
+    // Mod toggle (sol üst köşe) — NORMAL / HARDCORE
+    this.add.text(20, 18, t('mode.label') + ':', {
+      font: '11px system-ui', color: '#aac'
+    }).setOrigin(0, 0.5);
+
+    const modes = [
+      { key: 'normal', label: t('mode.normal'), color: COLORS.BTN_HOVER },
+      { key: 'hardcore', label: t('mode.hardcore'), color: COLORS.SPIKE }
+    ];
+    modes.forEach((m, i) => {
+      const x = 70 + i * 90;
+      const y = 30;
+      const isActive = MODE === m.key;
+      const bg = this.add.rectangle(x, y, 80, 22, isActive ? m.color : 0x0F1622, isActive ? 1 : 0.7)
+        .setStrokeStyle(1, m.color);
+      this.add.text(x, y, m.label, {
+        font: 'bold 10px system-ui', color: isActive ? '#fff' : '#aac'
+      }).setOrigin(0.5);
+      bg.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+        if (MODE !== m.key) {
+          setMode(m.key);
+          SFX.click();
+          this.scene.restart();
+        }
+      });
+    });
+
+    // Mod açıklama
+    const modeDesc = MODE === 'hardcore' ? t('mode.hardcoreDesc') : t('mode.normalDesc');
+    this.add.text(20, 52, modeDesc, {
+      font: 'italic 10px system-ui',
+      color: MODE === 'hardcore' ? '#FF6B6B' : '#aac'
+    }).setOrigin(0, 0.5);
   }
 }
 
@@ -1170,7 +1227,9 @@ class ActionScene extends Phaser.Scene {
   constructor() { super('Action'); }
 
   init(data) {
-    this.lives = (data && data.lives !== undefined) ? data.lives : STARTING_LIVES;
+    const defaultLives = MODE === 'hardcore' ? 1 : STARTING_LIVES;
+    this.lives = (data && data.lives !== undefined) ? data.lives : defaultLives;
+    this.maxLives = MODE === 'hardcore' ? 1 : STARTING_LIVES;
   }
 
   create() {
@@ -1322,9 +1381,12 @@ class ActionScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.bonuses, (_, b) => this.collectBonus(b), null, this);
 
     // ========== Checkpoint (mavi flag, segment 2 sonu) ==========
-    this.checkpoint = this.physics.add.staticSprite(2150, groundY - 30, 'checkflag');
-    this.checkpoint.activated = false;
-    this.physics.add.overlap(this.player, this.checkpoint, () => this.activateCheckpoint(), null, this);
+    // HARDCORE modda checkpoint disabled
+    if (MODE !== 'hardcore') {
+      this.checkpoint = this.physics.add.staticSprite(2150, groundY - 30, 'checkflag');
+      this.checkpoint.activated = false;
+      this.physics.add.overlap(this.player, this.checkpoint, () => this.activateCheckpoint(), null, this);
+    }
 
     // ========== Bitiş bayrağı ==========
     this.flag = this.physics.add.staticSprite(3380, groundY - 30, 'flag');
@@ -1425,8 +1487,9 @@ class ActionScene extends Phaser.Scene {
     b.destroy();
     SFX.accept();
     RunStats.bonusCollected++;
-    const labelText = (this.lives < STARTING_LIVES) ? t('action.lifeBonus') : '⭐';
-    if (this.lives < STARTING_LIVES) {
+    const max = this.maxLives || STARTING_LIVES;
+    const labelText = (this.lives < max) ? t('action.lifeBonus') : '⭐';
+    if (this.lives < max) {
       this.lives++;
       this.updateHUD();
     }
@@ -1480,7 +1543,8 @@ class ActionScene extends Phaser.Scene {
   }
 
   updateHUD() {
-    this.livesText.setText('CAN: ' + '♥'.repeat(this.lives) + '♡'.repeat(STARTING_LIVES - this.lives));
+    const max = this.maxLives || STARTING_LIVES;
+    this.livesText.setText(t('action.lives') + ': ' + '♥'.repeat(this.lives) + '♡'.repeat(Math.max(0, max - this.lives)));
   }
 
   die() {
@@ -1627,8 +1691,17 @@ class GameOverScene extends Phaser.Scene {
       stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5);
 
+    // Mod rozeti (hardcore başardıysa altın)
+    const modeLabel = MODE === 'hardcore' ? t('gameover.modeHardcore') : t('gameover.modeNormal');
+    this.add.text(w / 2, h / 2 - 95, modeLabel, {
+      font: 'bold 12px system-ui',
+      color: MODE === 'hardcore' ? '#FF6B6B' : '#aac',
+      backgroundColor: '#0F1622',
+      padding: { x: 8, y: 3 }
+    }).setOrigin(0.5);
+
     // Tagline
-    this.add.text(w / 2, h / 2 - 75, this.won ? t('gameover.winSub') : t('gameover.loseSub'), {
+    this.add.text(w / 2, h / 2 - 70, this.won ? t('gameover.winSub') : t('gameover.loseSub'), {
       font: '17px system-ui', color: '#ECF0F1', align: 'center'
     }).setOrigin(0.5);
 
