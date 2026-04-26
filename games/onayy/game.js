@@ -360,7 +360,10 @@ class TermsScene extends Phaser.Scene {
       h: 260
     }).forEach(d => this.trackSprite(d));
 
-    const btn = makeButton(this, -100, GAME_H / 2 + 100, 160, 40, 'ONAYLIYORUM', () => this.nextTerm());
+    // Buton dialog'un ALTINDA hareket etsin (z-conflict önle)
+    const laneY = GAME_H - 90;
+    const btn = makeButton(this, -100, laneY, 160, 40, 'ONAYLIYORUM', () => this.nextTerm());
+    btn.bg.setDepth(10); btn.txt.setDepth(11);
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
 
     const tween = this.tweens.add({
@@ -457,6 +460,12 @@ class TermsScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.trackSprite(valueText);
 
+    // Drag affordance hint
+    const hintTxt = this.add.text(GAME_W / 2, sliderY + 30, '↔ kaydırıcıyı sürükle', {
+      font: 'italic 12px system-ui', color: HEX.TEXT_HINT
+    }).setOrigin(0.5);
+    this.trackSprite(hintTxt);
+
     knob.on('drag', (pointer, dragX) => {
       const clampedX = Phaser.Math.Clamp(dragX, minX, maxX);
       knob.x = clampedX;
@@ -513,31 +522,36 @@ class TermsScene extends Phaser.Scene {
       h: 240
     }).forEach(d => this.trackSprite(d));
 
-    // Yeşil hedef
-    const target = this.add.rectangle(GAME_W - 130, GAME_H / 2 + 100, 90, 60, COLORS.ACCENT_OK, 0.4)
-      .setStrokeStyle(2, COLORS.ACCENT_OK);
-    this.add.text(GAME_W - 130, GAME_H / 2 + 100, 'HEDEF', {
-      font: 'bold 11px system-ui', color: '#fff'
-    }).setOrigin(0.5);
-    this.trackSprite(target);
+    // Layout: dialog daha yukarda, kutular dialog ALTINDA aşağı bandda
+    const lane = GAME_H - 110;
 
-    // Kırmızı engel (ortada, hareket eder)
-    const blocker = this.add.rectangle(GAME_W / 2, GAME_H / 2 + 100, 60, 60, COLORS.SPIKE);
+    // Yeşil hedef (sağ alt)
+    const target = this.add.rectangle(GAME_W - 130, lane, 100, 70, COLORS.ACCENT_OK, 0.5)
+      .setStrokeStyle(2, COLORS.ACCENT_OK);
+    const targetLabel = this.add.text(GAME_W - 130, lane, 'HEDEF', {
+      font: 'bold 12px system-ui', color: '#fff'
+    }).setOrigin(0.5);
+    this.trackSprite(target); this.trackSprite(targetLabel);
+
+    // Kırmızı engel (ortada, dikey hareket — drag bandında)
+    const blocker = this.add.rectangle(GAME_W / 2, lane, 70, 70, COLORS.SPIKE)
+      .setStrokeStyle(2, 0xFFFFFF, 0.4);
     this.trackSprite(blocker);
     const blockerTween = this.tweens.add({
       targets: blocker,
-      y: GAME_H / 2 + 30,
+      y: lane - 50,
       duration: 1100,
       yoyo: true,
-      repeat: -1
+      repeat: -1,
+      ease: 'Sine.inOut'
     });
     this.trackSprite(blockerTween);
 
-    // Sürüklenebilir kutu
-    const drag = this.add.rectangle(150, GAME_H / 2 + 100, 100, 50, COLORS.BTN_HOVER)
+    // Sürüklenebilir kutu (sol alt)
+    const drag = this.add.rectangle(150, lane, 110, 56, COLORS.BTN_HOVER)
       .setStrokeStyle(2, 0xFFFFFF);
-    const dragText = this.add.text(150, GAME_H / 2 + 100, 'ONAYLA', {
-      font: 'bold 12px system-ui', color: '#fff'
+    const dragText = this.add.text(150, lane, 'ONAYLA', {
+      font: 'bold 13px system-ui', color: '#fff'
     }).setOrigin(0.5);
     drag.setInteractive({ draggable: true, useHandCursor: true });
     this.input.setDraggable(drag);
@@ -703,9 +717,9 @@ class TermsScene extends Phaser.Scene {
       h: 280
     }).forEach(d => this.trackSprite(d));
 
-    // Sahte cursor (custom)
-    const fakeCursor = this.add.circle(GAME_W / 2, GAME_H / 2 + 100, 6, 0x000000)
-      .setStrokeStyle(1, 0xffffff).setDepth(900);
+    // Sahte cursor — başlangıçta ekran dışında, mouse'la senkron olunca görünsün
+    const fakeCursor = this.add.circle(-100, -100, 7, 0x000000)
+      .setStrokeStyle(2, 0xffffff).setDepth(900);
     this.trackSprite(fakeCursor);
 
     this.input.setDefaultCursor('none');
