@@ -235,6 +235,95 @@ function startBGM() {
 }
 
 // =========================================================
+// RUN STATS — global tracker (cross-scene)
+// =========================================================
+const RunStats = {
+  startTime: 0,
+  bonusCollected: 0,
+  deathCount: 0,
+  termRetries: 0,
+  reset() {
+    this.startTime = Date.now();
+    this.bonusCollected = 0;
+    this.deathCount = 0;
+    this.termRetries = 0;
+  },
+  elapsedMs() {
+    return Date.now() - this.startTime;
+  },
+  formatTime(ms) {
+    const total = Math.floor(ms / 1000);
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+};
+
+const BEST_KEY = 'onayy.bestTimeMs';
+function saveBestTime(ms) {
+  try {
+    const prev = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
+    if (!prev || ms < prev) {
+      localStorage.setItem(BEST_KEY, ms.toString());
+      return true; // yeni rekor
+    }
+  } catch (_) {}
+  return false;
+}
+function getBestTime() {
+  try {
+    const v = parseInt(localStorage.getItem(BEST_KEY) || '0', 10);
+    return v || null;
+  } catch (_) { return null; }
+}
+
+// =========================================================
+// CONFETTI VFX (win celebration)
+// =========================================================
+function spawnConfetti(scene, count = 60) {
+  const colors = [0xFFE66D, 0x4ECDC4, 0xFF6B6B, 0xECF0F1, 0x4A90E2, 0x2ECC71];
+  for (let i = 0; i < count; i++) {
+    const x = Phaser.Math.Between(0, GAME_W);
+    const y = -20;
+    const size = Phaser.Math.Between(4, 10);
+    const piece = scene.add.rectangle(x, y, size, size * 1.4, Phaser.Utils.Array.GetRandom(colors))
+      .setDepth(1000)
+      .setRotation(Math.random() * Math.PI);
+    scene.tweens.add({
+      targets: piece,
+      y: GAME_H + 50,
+      x: x + Phaser.Math.Between(-150, 150),
+      rotation: piece.rotation + Phaser.Math.FloatBetween(-3, 3),
+      duration: Phaser.Math.Between(2200, 3800),
+      delay: Phaser.Math.Between(0, 1500),
+      ease: 'Quad.in',
+      onComplete: () => piece.destroy()
+    });
+  }
+}
+
+// =========================================================
+// DEATH VFX — squash + particle burst
+// =========================================================
+function deathBurst(scene, x, y, color = COLORS.SPIKE) {
+  for (let i = 0; i < 14; i++) {
+    const angle = (Math.PI * 2 * i) / 14;
+    const speed = Phaser.Math.Between(120, 220);
+    const p = scene.add.circle(x, y, Phaser.Math.Between(2, 4), color)
+      .setDepth(500);
+    scene.tweens.add({
+      targets: p,
+      x: x + Math.cos(angle) * speed,
+      y: y + Math.sin(angle) * speed - 30,
+      alpha: 0,
+      duration: 600,
+      ease: 'Quad.out',
+      onComplete: () => p.destroy()
+    });
+  }
+}
+
+// =========================================================
 // SCENE: BOOT
 // =========================================================
 
@@ -254,12 +343,21 @@ class BootScene extends Phaser.Scene {
     const start = () => {
       if (starting) return;
       starting = true;
+      RunStats.reset();
       SFX.accept();
       this.cameras.main.fadeOut(200, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('Terms'));
     };
 
     makeButton(this, GAME_W / 2 - 90, GAME_H / 2 + 100, 140, 38, 'BAŞLA', start);
+
+    // En iyi rekor varsa göster
+    const best = getBestTime();
+    if (best) {
+      this.add.text(GAME_W / 2, GAME_H / 2 + 170, `🏆 En iyi süre: ${RunStats.formatTime(best)}`, {
+        font: 'italic 13px system-ui', color: '#FFE66D'
+      }).setOrigin(0.5);
+    }
 
     makeButton(this, GAME_W / 2 + 90, GAME_H / 2 + 100, 140, 38, 'VAZGEÇ', () => {
       const warn = this.add.text(GAME_W / 2, GAME_H / 2 + 160, 'Vazgeçemezsiniz. Hayatın gerçeği bu.', {
@@ -1053,21 +1151,35 @@ class ActionScene extends Phaser.Scene {
   }
 
   collectBonus(b) {
+    const bx = b.x, by = b.y;
     b.destroy();
     SFX.accept();
+    RunStats.bonusCollected++;
+    const labelText = (this.lives < STARTING_LIVES) ? '+1 ♥' : '⭐';
     if (this.lives < STARTING_LIVES) {
       this.lives++;
       this.updateHUD();
-      // "+1" pop
-      const popup = this.add.text(b.x, b.y - 20, '+1 ♥', {
-        font: 'bold 18px system-ui', color: '#2ECC71', stroke: '#000', strokeThickness: 3
-      }).setOrigin(0.5);
+    }
+    const popup = this.add.text(bx, by - 20, labelText, {
+      font: 'bold 18px system-ui', color: '#2ECC71', stroke: '#000', strokeThickness: 3
+    }).setOrigin(0.5);
+    this.tweens.add({
+      targets: popup,
+      y: by - 60,
+      alpha: 0,
+      duration: 700,
+      onComplete: () => popup.destroy()
+    });
+    // Mini sparkle
+    for (let i = 0; i < 6; i++) {
+      const sp = this.add.circle(bx, by, 2, COLORS.FLAG);
       this.tweens.add({
-        targets: popup,
-        y: b.y - 60,
+        targets: sp,
+        x: bx + Phaser.Math.Between(-30, 30),
+        y: by + Phaser.Math.Between(-30, 30),
         alpha: 0,
-        duration: 700,
-        onComplete: () => popup.destroy()
+        duration: 400,
+        onComplete: () => sp.destroy()
       });
     }
   }
@@ -1104,19 +1216,44 @@ class ActionScene extends Phaser.Scene {
   die() {
     if (this.gameOver) return;
     SFX.death();
+    RunStats.deathCount++;
+
+    // Death VFX — burst at player position
+    deathBurst(this, this.player.x, this.player.y, COLORS.SPIKE);
+
+    // Player squash anim before respawn
+    const px = this.player.x, py = this.player.y;
+    this.player.setVelocity(0, 0);
+    this.player.body.enable = false;
+    this.player.setVisible(false);
+
     this.lives--;
     this.updateHUD();
+
     if (this.lives <= 0) {
       this.gameOver = true;
       if (this.bgm) { this.bgm.stop(); this.bgm = null; }
-      this.cameras.main.fadeOut(400, 0, 0, 0);
+      this.cameras.main.fadeOut(500, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('GameOver', { won: false }));
       return;
     }
-    // Respawn
-    this.player.setPosition(this.spawnX, this.spawnY);
-    this.player.setVelocity(0, 0);
-    this.cameras.main.shake(200, 0.01);
+
+    this.cameras.main.shake(220, 0.012);
+
+    // 400ms sonra respawn
+    this.time.delayedCall(450, () => {
+      if (this.gameOver) return;
+      this.player.setPosition(this.spawnX, this.spawnY);
+      this.player.setVelocity(0, 0);
+      this.player.body.enable = true;
+      this.player.setVisible(true);
+      this.player.setAlpha(0);
+      // Re-appear flicker
+      this.tweens.add({
+        targets: this.player, alpha: 1, duration: 80, repeat: 3, yoyo: true,
+        onComplete: () => this.player.setAlpha(1)
+      });
+    });
   }
 
   win() {
@@ -1207,22 +1344,54 @@ class GameOverScene extends Phaser.Scene {
     this.cameras.main.fadeIn(300, 0, 0, 0);
 
     const w = this.scale.width, h = this.scale.height;
-    this.add.text(w / 2, h / 2 - 60, this.won ? 'TEBRİKLER — GEÇTİN' : 'OYUN BİTTİ', {
+    const elapsed = RunStats.elapsedMs();
+    const isNewBest = this.won ? saveBestTime(elapsed) : false;
+    const best = getBestTime();
+
+    // Başlık
+    this.add.text(w / 2, h / 2 - 130, this.won ? 'TEBRİKLER — GEÇTİN' : 'OYUN BİTTİ', {
       font: 'bold 48px system-ui',
       color: this.won ? '#FFE66D' : '#FF6B6B',
       stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5);
 
-    this.add.text(w / 2, h / 2 + 10, this.won
-      ? '12 madde + aksiyon fazı tamamlandı.\nSen gerçek bir kullanıcısın.'
-      : 'Tüm canlarını kaybettin.\nAma şartnameyi geçmiştin, takdir.', {
-      font: '20px system-ui', color: '#ECF0F1', align: 'center'
+    // Tagline
+    this.add.text(w / 2, h / 2 - 75, this.won
+      ? '12 madde + aksiyon fazı tamamlandı.'
+      : 'Tüm canlarını kaybettin. Şartnameyi geçmiştin, takdir.', {
+      font: '17px system-ui', color: '#ECF0F1', align: 'center'
     }).setOrigin(0.5);
 
-    const restart = this.add.text(w / 2, h / 2 + 110, '[R] Tekrar Başla', {
+    // İstatistik kutusu
+    const statBox = this.add.rectangle(w / 2, h / 2 + 10, 460, 130, 0x000000, 0.45)
+      .setStrokeStyle(1, 0x4A90E2);
+
+    const stats = [
+      ['⏱  Süre', RunStats.formatTime(elapsed) + (isNewBest ? '   🏆 YENİ REKOR' : '')],
+      ['💀 Ölüm', RunStats.deathCount.toString()],
+      ['⭐ Toplanan bonus', `${RunStats.bonusCollected}/4`],
+      best ? ['🏆 En iyi rekor', RunStats.formatTime(best)] : null
+    ].filter(Boolean);
+
+    stats.forEach((row, i) => {
+      const y = h / 2 - 30 + i * 25;
+      this.add.text(w / 2 - 200, y, row[0], {
+        font: '15px system-ui', color: '#aac'
+      }).setOrigin(0, 0.5);
+      this.add.text(w / 2 + 200, y, row[1], {
+        font: 'bold 15px system-ui',
+        color: row[1].includes('REKOR') ? '#FFE66D' : '#ECF0F1'
+      }).setOrigin(1, 0.5);
+    });
+
+    // Restart prompt
+    const restart = this.add.text(w / 2, h / 2 + 130, '[R] Tekrar Başla', {
       font: 'bold 22px system-ui', color: '#4ECDC4'
     }).setOrigin(0.5);
     this.tweens.add({ targets: restart, alpha: 0.4, duration: 800, yoyo: true, repeat: -1 });
+
+    // Win celebration: confetti
+    if (this.won) spawnConfetti(this, 80);
 
     this._handler = (e) => {
       if (e.key === 'r' || e.key === 'R') {
