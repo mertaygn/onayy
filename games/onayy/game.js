@@ -623,22 +623,23 @@ class BootScene extends Phaser.Scene {
       });
     });
 
-    // Mod toggle (sol üst köşe) — NORMAL / HARDCORE
-    this.add.text(20, 18, t('mode.label') + ':', {
-      font: '11px system-ui', color: '#aac'
-    }).setOrigin(0, 0.5);
-
+    // Mod toggle — sağ üst, TR/EN'in altında (masaüstü ikonlarıyla çakışmasın)
     const modes = [
       { key: 'normal', label: t('mode.normal'), color: COLORS.BTN_HOVER },
       { key: 'hardcore', label: t('mode.hardcore'), color: COLORS.SPIKE }
     ];
+    const modeY = 64;
+    const modeBaseX = GAME_W - 175;
+    this.add.text(modeBaseX - 20, modeY, t('mode.label') + ':', {
+      font: '10px system-ui', color: '#aac'
+    }).setOrigin(1, 0.5);
+
     modes.forEach((m, i) => {
-      const x = 70 + i * 90;
-      const y = 30;
+      const x = modeBaseX + i * 86;
       const isActive = MODE === m.key;
-      const bg = this.add.rectangle(x, y, 80, 22, isActive ? m.color : 0x0F1622, isActive ? 1 : 0.7)
+      const bg = this.add.rectangle(x, modeY, 80, 22, isActive ? m.color : 0x0F1622, isActive ? 1 : 0.7)
         .setStrokeStyle(1, m.color);
-      this.add.text(x, y, m.label, {
+      this.add.text(x, modeY, m.label, {
         font: 'bold 10px system-ui', color: isActive ? '#fff' : '#aac'
       }).setOrigin(0.5);
       bg.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
@@ -650,12 +651,12 @@ class BootScene extends Phaser.Scene {
       });
     });
 
-    // Mod açıklama
+    // Mod açıklama — toggle'ın altında, sağa hizalı
     const modeDesc = MODE === 'hardcore' ? t('mode.hardcoreDesc') : t('mode.normalDesc');
-    this.add.text(20, 52, modeDesc, {
+    this.add.text(GAME_W - 20, modeY + 20, modeDesc, {
       font: 'italic 10px system-ui',
       color: MODE === 'hardcore' ? '#FF6B6B' : '#aac'
-    }).setOrigin(0, 0.5);
+    }).setOrigin(1, 0.5);
   }
 }
 
