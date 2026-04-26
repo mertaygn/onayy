@@ -44,6 +44,159 @@ const IS_TOUCH = (typeof window !== 'undefined') && (
 );
 
 // =========================================================
+// i18n — Türkçe / English
+// =========================================================
+const I18N = {
+  tr: {
+    'boot.title': 'KULLANICI SÖZLEŞMESİ',
+    'boot.body': 'Bu hizmeti kullanmak için 12 maddelik kullanıcı şartnamesini\nokuyup onaylamanız gerekmektedir.\n\nSonra... gerçek oyun başlar.',
+    'boot.start': 'BAŞLA',
+    'boot.cancel': 'VAZGEÇ',
+    'boot.cantCancel': 'Vazgeçemezsiniz. Hayatın gerçeği bu.',
+    'boot.bestTime': '🏆 En iyi süre',
+    'boot.lang': 'Dil',
+    'progress.term': 'Madde',
+    'shartname.label': 'ŞARTNAME — Madde {n}/12',
+    'btn.agree': 'ONAYLIYORUM',
+    'btn.agreeLower': 'onayla',
+    'btn.yes': 'EVET',
+    'btn.no': 'HAYIR',
+    'btn.continue': 'DEVAM ET',
+    'btn.skip5': '⏩ 5x ATLA',
+    'btn.send': 'GÖNDER ↵',
+    'btn.delete': '⌫ Sil',
+    'term1.body': 'Bu hizmeti kullanmak için makul ve mantıklı şartlarımızı kabul ediyorsunuz.\n\nKolay başlıyoruz.',
+    'term2.body': 'Madde 2: Kullanıcı, gerekli düğmeyi bulma sorumluluğunu kabul eder.\n\nButon ekranın bir köşesinde, küçük.',
+    'term3.body': 'Aşağıdaki dört buton aynı görünür.\nSADECE BİRİ gerçek "ONAYLIYORUM" butonudur.\nYanlış → ekran sıfırlanır.',
+    'term3.wrong': 'Yanlış buton.',
+    'term4.body': 'Madde 4: Kullanıcı, hareket eden hedefleri yakalama yeteneğini kabul eder.\n\nButon soldan sağa kayıyor. Yakala.',
+    'term5.body': 'Madde 5: İnsan olduğunuzu doğrulayın.\nAşağıdaki yıldız sayısını yazıp ENTER\'a basın.',
+    'term5.hint': "0–9 yaz · ENTER ile gönder · ⌫ ile sil",
+    'term5.wrong': 'Yanlış. Robot olabilir misin?',
+    'term6.body': 'Madde 6: Tolerans seviyenizi tam değere getirin.\n\nKaydırıcıyı 100\'e sürükle. (Sistem geri çekiyor.)',
+    'term6.value': 'Değer',
+    'term6.dragHint': '↔ kaydırıcıyı sürükle',
+    'term7.body': 'Madde 7: Kullanıcı, butonun "kayganlığını" kabul eder.\n\nButonu yakala.',
+    'term8.body': 'Madde 8: "ONAYLA" kutusunu yeşil hedefe sürükleyin.\nKırmızı engele dokunmadan.',
+    'term8.target': 'HEDEF',
+    'term8.drag': 'ONAYLA',
+    'term8.hit': 'Engele çarptın.',
+    'term9.bodyKbd': 'Madde 9: Tüm sayfaları okuyarak sona ulaşın.\n(İpucu: → tuşunu basılı tut.)',
+    'term9.bodyTouch': 'Madde 9: Tüm sayfaları okuyarak sona ulaşın.\n(İpucu: "5x ATLA" butonuyla hızla geç.)',
+    'term9.page': 'Sayfa {n} / {total}',
+    'term10.body': 'Madde 10: Buton göründüğü anda tıklayın.\nGörünmeden kaybolur.',
+    'term10.slowHint': '(Belki çok yavaşsın. Süre uzatıldı.)',
+    'term11.title': 'ŞARTNAME — Madde 11/12 (Onay {n}/5)',
+    'term11.q1': 'Şartların tamamını onaylıyor musunuz?',
+    'term11.q2': 'Emin misiniz?',
+    'term11.q3': 'Kesinlikle emin misiniz?',
+    'term11.q4': 'Pişman olmayacaksınız değil mi?',
+    'term11.q5': 'Son şans. Cidden mi?',
+    'term11.reset': 'Geri dönüş yok. Sıfırlandı.',
+    'term12.body': 'Madde 12 (son): Cursor X ekseni TERSİNE çalışıyor.\n\nButona ulaşmak için ters yönde hareket et.',
+    'action.label': 'AKSİYON FAZI',
+    'action.lives': 'CAN',
+    'action.progress': 'İLERLEME',
+    'action.checkpoint': 'KONTROL NOKTASI',
+    'action.lifeBonus': '+1 ♥',
+    'pause.title': 'DURAKLATILDI',
+    'pause.hint': '[ESC] Devam   ·   [R] Yeniden Başla',
+    'gameover.win': 'TEBRİKLER — GEÇTİN',
+    'gameover.lose': 'OYUN BİTTİ',
+    'gameover.winSub': '12 madde + aksiyon fazı tamamlandı.',
+    'gameover.loseSub': 'Tüm canlarını kaybettin. Şartnameyi geçmiştin, takdir.',
+    'gameover.time': '⏱  Süre',
+    'gameover.deaths': '💀 Ölüm',
+    'gameover.bonus': '⭐ Toplanan bonus',
+    'gameover.bestRecord': '🏆 En iyi rekor',
+    'gameover.newRecord': '🏆 YENİ REKOR',
+    'gameover.restart': '[R] Tekrar Başla',
+    'gameover.loadStatus': ['Karakterler hazırlanıyor...']
+  },
+  en: {
+    'boot.title': 'USER AGREEMENT',
+    'boot.body': 'To use this service, you must read and agree to all 12\narticles of the user terms.\n\nThen... the real game begins.',
+    'boot.start': 'START',
+    'boot.cancel': 'CANCEL',
+    'boot.cantCancel': "You can't cancel. That's life.",
+    'boot.bestTime': '🏆 Best time',
+    'boot.lang': 'Lang',
+    'progress.term': 'Article',
+    'shartname.label': 'TERMS — Article {n}/12',
+    'btn.agree': 'I AGREE',
+    'btn.agreeLower': 'agree',
+    'btn.yes': 'YES',
+    'btn.no': 'NO',
+    'btn.continue': 'CONTINUE',
+    'btn.skip5': '⏩ SKIP 5x',
+    'btn.send': 'SEND ↵',
+    'btn.delete': '⌫ Del',
+    'term1.body': "By using this service, you accept our reasonable and rational terms.\n\nWe start easy.",
+    'term2.body': 'Article 2: User accepts the responsibility of finding the right button.\n\nThe button is in a corner, small.',
+    'term3.body': 'The four buttons below look identical.\nONLY ONE is the real "I AGREE" button.\nWrong → screen resets.',
+    'term3.wrong': 'Wrong button.',
+    'term4.body': 'Article 4: User accepts the ability to catch moving targets.\n\nButton slides left to right. Catch it.',
+    'term5.body': 'Article 5: Verify you are human.\nCount the stars below, type the number, press ENTER.',
+    'term5.hint': '0–9 type · ENTER to send · ⌫ to delete',
+    'term5.wrong': 'Wrong. Could you be a robot?',
+    'term6.body': "Article 6: Set your tolerance level to the maximum.\n\nDrag the slider to 100. (System pulls back.)",
+    'term6.value': 'Value',
+    'term6.dragHint': '↔ drag the slider',
+    'term7.body': 'Article 7: User accepts the "slipperiness" of the button.\n\nCatch the button.',
+    'term8.body': 'Article 8: Drag the "AGREE" box to the green target.\nWithout touching the red obstacle.',
+    'term8.target': 'TARGET',
+    'term8.drag': 'AGREE',
+    'term8.hit': 'You hit the obstacle.',
+    'term9.bodyKbd': 'Article 9: Read all pages and reach the end.\n(Hint: hold → key.)',
+    'term9.bodyTouch': 'Article 9: Read all pages and reach the end.\n(Hint: use "SKIP 5x" button to fly through.)',
+    'term9.page': 'Page {n} / {total}',
+    'term10.body': 'Article 10: Click the button the moment it appears.\nIt vanishes if you miss.',
+    'term10.slowHint': '(Maybe you are too slow. Window extended.)',
+    'term11.title': 'TERMS — Article 11/12 (Confirm {n}/5)',
+    'term11.q1': 'Do you agree to all terms?',
+    'term11.q2': 'Are you sure?',
+    'term11.q3': 'Absolutely sure?',
+    'term11.q4': "You won't regret it, right?",
+    'term11.q5': 'Last chance. Really?',
+    'term11.reset': 'No going back. Reset.',
+    'term12.body': 'Article 12 (final): Cursor X-axis is REVERSED.\n\nMove the opposite way to reach the button.',
+    'action.label': 'ACTION PHASE',
+    'action.lives': 'HP',
+    'action.progress': 'PROGRESS',
+    'action.checkpoint': 'CHECKPOINT',
+    'action.lifeBonus': '+1 ♥',
+    'pause.title': 'PAUSED',
+    'pause.hint': '[ESC] Resume   ·   [R] Restart',
+    'gameover.win': 'CONGRATS — YOU PASSED',
+    'gameover.lose': 'GAME OVER',
+    'gameover.winSub': '12 articles + action phase completed.',
+    'gameover.loseSub': 'You lost all lives. But you passed the terms — respect.',
+    'gameover.time': '⏱  Time',
+    'gameover.deaths': '💀 Deaths',
+    'gameover.bonus': '⭐ Bonuses',
+    'gameover.bestRecord': '🏆 Best record',
+    'gameover.newRecord': '🏆 NEW RECORD',
+    'gameover.restart': '[R] Restart',
+    'gameover.loadStatus': ['Preparing...']
+  }
+};
+
+let LANG = (() => {
+  try { return localStorage.getItem('onayy.lang') || 'tr'; } catch (_) { return 'tr'; }
+})();
+function setLang(l) {
+  LANG = l;
+  try { localStorage.setItem('onayy.lang', l); } catch (_) {}
+}
+function t(key, params) {
+  let s = (I18N[LANG] && I18N[LANG][key]);
+  if (s === undefined) s = I18N.tr[key];
+  if (s === undefined) return key;
+  if (params) Object.entries(params).forEach(([k, v]) => { s = String(s).replace(new RegExp('\\{' + k + '\\}', 'g'), v); });
+  return s;
+}
+
+// =========================================================
 // SFX — Web Audio API prosedürel
 // =========================================================
 
@@ -340,8 +493,8 @@ class BootScene extends Phaser.Scene {
     makeDesktopBackground(this);
 
     createDialog(this, {
-      title: 'KULLANICI SÖZLEŞMESİ',
-      body: 'Bu hizmeti kullanmak için 12 maddelik kullanıcı şartnamesini\nokuyup onaylamanız gerekmektedir.\n\nSonra... gerçek oyun başlar.',
+      title: t('boot.title'),
+      body: t('boot.body'),
       h: 280
     });
 
@@ -355,21 +508,41 @@ class BootScene extends Phaser.Scene {
       this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('Terms'));
     };
 
-    makeButton(this, GAME_W / 2 - 90, GAME_H / 2 + 100, 140, 38, 'BAŞLA', start);
+    makeButton(this, GAME_W / 2 - 90, GAME_H / 2 + 100, 140, 38, t('boot.start'), start);
 
     // En iyi rekor varsa göster
     const best = getBestTime();
     if (best) {
-      this.add.text(GAME_W / 2, GAME_H / 2 + 170, `🏆 En iyi süre: ${RunStats.formatTime(best)}`, {
+      this.add.text(GAME_W / 2, GAME_H / 2 + 170, `${t('boot.bestTime')}: ${RunStats.formatTime(best)}`, {
         font: 'italic 13px system-ui', color: '#FFE66D'
       }).setOrigin(0.5);
     }
 
-    makeButton(this, GAME_W / 2 + 90, GAME_H / 2 + 100, 140, 38, 'VAZGEÇ', () => {
-      const warn = this.add.text(GAME_W / 2, GAME_H / 2 + 160, 'Vazgeçemezsiniz. Hayatın gerçeği bu.', {
+    makeButton(this, GAME_W / 2 + 90, GAME_H / 2 + 100, 140, 38, t('boot.cancel'), () => {
+      const warn = this.add.text(GAME_W / 2, GAME_H / 2 + 200, t('boot.cantCancel'), {
         font: 'italic 14px system-ui', color: HEX.WARN
       }).setOrigin(0.5);
       this.tweens.add({ targets: warn, alpha: 0, duration: 1800, delay: 600, onComplete: () => warn.destroy() });
+    });
+
+    // Dil toggle (sağ üst köşe) — TR / EN
+    const langs = ['tr', 'en'];
+    langs.forEach((lng, i) => {
+      const x = GAME_W - 80 + i * 36;
+      const y = 30;
+      const isActive = LANG === lng;
+      const bg = this.add.rectangle(x, y, 32, 22, isActive ? COLORS.BTN_HOVER : 0x0F1622, isActive ? 1 : 0.7)
+        .setStrokeStyle(1, 0x4A90E2);
+      this.add.text(x, y, lng.toUpperCase(), {
+        font: 'bold 11px system-ui', color: isActive ? '#fff' : '#aac'
+      }).setOrigin(0.5);
+      bg.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
+        if (LANG !== lng) {
+          setLang(lng);
+          SFX.click();
+          this.scene.restart();
+        }
+      });
     });
   }
 }
@@ -478,19 +651,19 @@ class TermsScene extends Phaser.Scene {
   // 1. STANDART
   setupTerm1() {
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 1/12',
-      body: 'Bu hizmeti kullanmak için makul ve mantıklı şartlarımızı kabul ediyorsunuz.\n\nKolay başlıyoruz.',
+      title: t('shartname.label', { n: 1 }),
+      body: t('term1.body'),
       h: 260
     }).forEach(d => this.trackSprite(d));
-    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 80, 180, 42, 'ONAYLIYORUM', () => this.nextTerm());
+    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 80, 180, 42, t('btn.agree'), () => this.nextTerm());
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
   }
 
   // 2. KÖŞEDE
   setupTerm2() {
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 2/12',
-      body: 'Madde 2: Kullanıcı, gerekli düğmeyi bulma sorumluluğunu kabul eder.\n\nButon ekranın bir köşesinde, küçük.',
+      title: t('shartname.label', { n: 2 }),
+      body: t('term2.body'),
       h: 260
     }).forEach(d => this.trackSprite(d));
 
@@ -499,7 +672,7 @@ class TermsScene extends Phaser.Scene {
       { x: 70, y: GAME_H - 80 }, { x: GAME_W - 70, y: GAME_H - 80 }
     ];
     const pos = corners[Phaser.Math.Between(0, 3)];
-    const btn = makeButton(this, pos.x, pos.y, 90, 24, 'onayla', () => this.nextTerm());
+    const btn = makeButton(this, pos.x, pos.y, 90, 24, t('btn.agreeLower'), () => this.nextTerm());
     btn.txt.setStyle({ font: '10px system-ui' });
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
     // Hover'da büyür
@@ -521,9 +694,9 @@ class TermsScene extends Phaser.Scene {
 
     const correct = Phaser.Math.Between(0, 3);
     [GAME_W / 2 - 270, GAME_W / 2 - 90, GAME_W / 2 + 90, GAME_W / 2 + 270].forEach((px, i) => {
-      const btn = makeButton(this, px, GAME_H / 2 + 100, 140, 40, 'ONAYLIYORUM', () => {
+      const btn = makeButton(this, px, GAME_H / 2 + 100, 140, 40, t('btn.agree'), () => {
         if (i === correct) this.nextTerm();
-        else { this.flashError('Yanlış buton.'); this.time.delayedCall(400, () => this.loadTerm(2)); }
+        else { this.flashError(t('term3.wrong')); this.time.delayedCall(400, () => this.loadTerm(2)); }
       });
       this.trackSprite(btn.bg); this.trackSprite(btn.txt);
     });
@@ -532,14 +705,14 @@ class TermsScene extends Phaser.Scene {
   // 4. HAREKETLİ
   setupTerm4() {
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 4/12',
-      body: 'Madde 4: Kullanıcı, hareket eden hedefleri yakalama yeteneğini kabul eder.\n\nButon soldan sağa kayıyor. Yakala.',
+      title: t('shartname.label', { n: 4 }),
+      body: t('term4.body'),
       h: 260
     }).forEach(d => this.trackSprite(d));
 
     // Buton dialog'un ALTINDA hareket etsin (z-conflict önle)
     const laneY = GAME_H - 90;
-    const btn = makeButton(this, -100, laneY, 160, 40, 'ONAYLIYORUM', () => this.nextTerm());
+    const btn = makeButton(this, -100, laneY, 160, 40, t('btn.agree'), () => this.nextTerm());
     btn.bg.setDepth(10); btn.txt.setDepth(11);
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
 
@@ -562,8 +735,8 @@ class TermsScene extends Phaser.Scene {
     this.captchaInput = '';
 
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 5/12',
-      body: 'Madde 5: İnsan olduğunuzu doğrulayın.\nAşağıdaki yıldız sayısını yazıp ENTER\'a basın.',
+      title: t('shartname.label', { n: 5 }),
+      body: t('term5.body'),
       h: 320
     }).forEach(d => this.trackSprite(d));
 
@@ -583,7 +756,7 @@ class TermsScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.trackSprite(inputBg); this.trackSprite(inputText);
 
-    const hint = this.add.text(GAME_W / 2, GAME_H / 2 + 112, '0–9 yaz · ENTER ile gönder · ⌫ ile sil', {
+    const hint = this.add.text(GAME_W / 2, GAME_H / 2 + 112, t('term5.hint'), {
       font: '11px system-ui', color: HEX.TEXT_HINT
     }).setOrigin(0.5);
     this.trackSprite(hint);
@@ -601,7 +774,7 @@ class TermsScene extends Phaser.Scene {
     };
     const submit = () => {
       if (parseInt(this.captchaInput, 10) === this.captchaCount) this.nextTerm();
-      else { this.flashError('Yanlış. Robot olabilir misin?'); this.time.delayedCall(400, () => this.loadTerm(4)); }
+      else { this.flashError(t('term5.wrong')); this.time.delayedCall(400, () => this.loadTerm(4)); }
     };
 
     for (let d = 0; d <= 9; d++) {
@@ -639,7 +812,7 @@ class TermsScene extends Phaser.Scene {
       const backY = padBaseY + 2 * (cellH + gap);
       const backBg = this.add.rectangle(backX, backY, cellW * 2 + gap, cellH, 0xC0C0C0)
         .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
-      const backTxt = this.add.text(backX, backY, '⌫ Sil', {
+      const backTxt = this.add.text(backX, backY, t('btn.delete'), {
         font: 'bold 14px system-ui', color: HEX.TEXT
       }).setOrigin(0.5).setDepth(151);
       backBg.setInteractive({ useHandCursor: true }).on('pointerdown', () => { SFX.click(); popDigit(); });
@@ -648,7 +821,7 @@ class TermsScene extends Phaser.Scene {
       const sendX = startX + 3 * (cellW + gap) + (cellW + gap) / 2;
       const sendBg = this.add.rectangle(sendX, backY, cellW * 3 + gap * 2, cellH, COLORS.ACCENT_OK, 0.85)
         .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
-      const sendTxt = this.add.text(sendX, backY, 'GÖNDER ↵', {
+      const sendTxt = this.add.text(sendX, backY, t('btn.send'), {
         font: 'bold 14px system-ui', color: '#fff'
       }).setOrigin(0.5).setDepth(151);
       sendBg.setInteractive({ useHandCursor: true }).on('pointerdown', () => { SFX.click(); submit(); });
@@ -659,8 +832,8 @@ class TermsScene extends Phaser.Scene {
   // 6. SLIDER DİRENEN
   setupTerm6() {
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 6/12',
-      body: 'Madde 6: Tolerans seviyenizi tam değere getirin.\n\nKaydırıcıyı 100\'e sürükle. (Sistem geri çekiyor.)',
+      title: t('shartname.label', { n: 6 }),
+      body: t('term6.body'),
       h: 280
     }).forEach(d => this.trackSprite(d));
 
@@ -681,13 +854,13 @@ class TermsScene extends Phaser.Scene {
     this.input.setDraggable(knob);
     this.trackSprite(knob);
 
-    const valueText = this.add.text(GAME_W / 2, sliderY - 30, 'Değer: 0', {
+    const valueText = this.add.text(GAME_W / 2, sliderY - 30, `${t('term6.value')}: 0`, {
       font: 'bold 16px system-ui', color: HEX.TEXT
     }).setOrigin(0.5);
     this.trackSprite(valueText);
 
     // Drag affordance hint
-    const hintTxt = this.add.text(GAME_W / 2, sliderY + 30, '↔ kaydırıcıyı sürükle', {
+    const hintTxt = this.add.text(GAME_W / 2, sliderY + 30, t('term6.dragHint'), {
       font: 'italic 12px system-ui', color: HEX.TEXT_HINT
     }).setOrigin(0.5);
     this.trackSprite(hintTxt);
@@ -696,7 +869,7 @@ class TermsScene extends Phaser.Scene {
       const clampedX = Phaser.Math.Clamp(dragX, minX, maxX);
       knob.x = clampedX;
       value = Math.round(((clampedX - minX) / trackW) * 100);
-      valueText.setText(`Değer: ${value}`);
+      valueText.setText(`${t('term6.value')}: ${value}`);
       if (value >= 100) {
         this.nextTerm();
       }
@@ -709,7 +882,7 @@ class TermsScene extends Phaser.Scene {
         if (value > 0 && value < 100) {
           value = Math.max(0, value - 2);
           knob.x = minX + (value / 100) * trackW;
-          valueText.setText(`Değer: ${value}`);
+          valueText.setText(`${t('term6.value')}: ${value}`);
         }
       }
     });
@@ -718,12 +891,12 @@ class TermsScene extends Phaser.Scene {
   // 7. KAÇAN BUTON
   setupTerm7() {
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 7/12',
-      body: 'Madde 7: Kullanıcı, butonun "kayganlığını" kabul eder.\n\nButonu yakala.',
+      title: t('shartname.label', { n: 7 }),
+      body: t('term7.body'),
       h: 260
     }).forEach(d => this.trackSprite(d));
 
-    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 110, 180, 42, 'ONAYLIYORUM', () => this.nextTerm());
+    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 110, 180, 42, t('btn.agree'), () => this.nextTerm());
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
     this.escapeBtn = btn;
   }
@@ -743,8 +916,8 @@ class TermsScene extends Phaser.Scene {
   // 8. DRAG-DROP
   setupTerm8() {
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 8/12',
-      body: 'Madde 8: "ONAYLA" kutusunu yeşil hedefe sürükleyin.\nKırmızı engele dokunmadan.',
+      title: t('shartname.label', { n: 8 }),
+      body: t('term8.body'),
       h: 240
     }).forEach(d => this.trackSprite(d));
 
@@ -754,7 +927,7 @@ class TermsScene extends Phaser.Scene {
     // Yeşil hedef (sağ alt)
     const target = this.add.rectangle(GAME_W - 130, lane, 100, 70, COLORS.ACCENT_OK, 0.5)
       .setStrokeStyle(2, COLORS.ACCENT_OK);
-    const targetLabel = this.add.text(GAME_W - 130, lane, 'HEDEF', {
+    const targetLabel = this.add.text(GAME_W - 130, lane, t('term8.target'), {
       font: 'bold 12px system-ui', color: '#fff'
     }).setOrigin(0.5);
     this.trackSprite(target); this.trackSprite(targetLabel);
@@ -776,7 +949,7 @@ class TermsScene extends Phaser.Scene {
     // Sürüklenebilir kutu (sol alt)
     const drag = this.add.rectangle(150, lane, 110, 56, COLORS.BTN_HOVER)
       .setStrokeStyle(2, 0xFFFFFF);
-    const dragText = this.add.text(150, lane, 'ONAYLA', {
+    const dragText = this.add.text(150, lane, t('term8.drag'), {
       font: 'bold 13px system-ui', color: '#fff'
     }).setOrigin(0.5);
     drag.setInteractive({ draggable: true, useHandCursor: true });
@@ -788,7 +961,7 @@ class TermsScene extends Phaser.Scene {
       dragText.x = dragX; dragText.y = dragY;
       // Engel çarpışma
       if (Phaser.Geom.Intersects.RectangleToRectangle(drag.getBounds(), blocker.getBounds())) {
-        this.flashError('Engele çarptın.');
+        this.flashError(t('term8.hit'));
         this.time.delayedCall(300, () => this.loadTerm(7));
       }
       // Hedef
@@ -806,10 +979,8 @@ class TermsScene extends Phaser.Scene {
     this.targetPage = 47;
 
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 9/12',
-      body: IS_TOUCH
-        ? 'Madde 9: Tüm sayfaları okuyarak sona ulaşın.\n(İpucu: "5x ATLA" butonuyla hızla geç.)'
-        : 'Madde 9: Tüm sayfaları okuyarak sona ulaşın.\n(İpucu: → tuşunu basılı tut.)',
+      title: t('shartname.label', { n: 9 }),
+      body: IS_TOUCH ? t('term9.bodyTouch') : t('term9.bodyKbd'),
       h: 280
     }).forEach(d => this.trackSprite(d));
 
@@ -817,21 +988,21 @@ class TermsScene extends Phaser.Scene {
       font: 'bold 28px system-ui', color: HEX.TEXT
     }).setOrigin(0.5);
     this.trackSprite(this.pageText);
-    this.pageText.setText(`Sayfa ${this.currentPage} / ${this.targetPage}`);
+    this.pageText.setText(t('term9.page', { n: this.currentPage, total: this.targetPage }));
 
     const advance = (n) => {
       this.currentPage = Math.min(this.targetPage, this.currentPage + n);
-      this.pageText.setText(`Sayfa ${this.currentPage} / ${this.targetPage}`);
+      this.pageText.setText(t('term9.page', { n: this.currentPage, total: this.targetPage }));
       SFX.paper();
       if (this.currentPage >= this.targetPage) this.nextTerm();
     };
 
-    const btn = makeButton(this, GAME_W / 2 - (IS_TOUCH ? 100 : 0), GAME_H / 2 + 95, 160, 40, 'DEVAM ET', () => advance(1));
+    const btn = makeButton(this, GAME_W / 2 - (IS_TOUCH ? 100 : 0), GAME_H / 2 + 95, 160, 40, t('btn.continue'), () => advance(1));
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
 
     // Touch için ekstra "5x ATLA" butonu (klavye → tuşunun touch alternatifi)
     if (IS_TOUCH) {
-      const fastBtn = makeButton(this, GAME_W / 2 + 100, GAME_H / 2 + 95, 160, 40, '⏩ 5x ATLA', () => advance(5));
+      const fastBtn = makeButton(this, GAME_W / 2 + 100, GAME_H / 2 + 95, 160, 40, t('btn.skip5'), () => advance(5));
       fastBtn.bg.setFillStyle(COLORS.ACCENT_WARN, 0.85);
       fastBtn.txt.setColor('#fff');
       this.trackSprite(fastBtn.bg); this.trackSprite(fastBtn.txt);
@@ -860,12 +1031,12 @@ class TermsScene extends Phaser.Scene {
     this.term10Active = true;
 
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 10/12',
-      body: 'Madde 10: Buton göründüğü anda tıklayın.\nGörünmeden kaybolur.',
+      title: t('shartname.label', { n: 10 }),
+      body: t('term10.body'),
       h: 240
     }).forEach(d => this.trackSprite(d));
 
-    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 100, 180, 42, 'ONAYLIYORUM', () => {
+    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 100, 180, 42, t('btn.agree'), () => {
       if (btn.bg.visible) {
         this.term10Active = false;
         this.nextTerm();
@@ -891,7 +1062,7 @@ class TermsScene extends Phaser.Scene {
         this.attemptCount++;
         if (this.attemptCount === 3) {
           this.visibleDuration = 1500;
-          const hint = this.add.text(GAME_W / 2, GAME_H / 2 + 150, '(Belki çok yavaşsın. Süre uzatıldı.)', {
+          const hint = this.add.text(GAME_W / 2, GAME_H / 2 + 150, t('term10.slowHint'), {
             font: 'italic 12px system-ui', color: HEX.TEXT_HINT
           }).setOrigin(0.5);
           this.trackSprite(hint);
@@ -905,11 +1076,7 @@ class TermsScene extends Phaser.Scene {
   setupTerm11() {
     this.confirmStep = 0;
     this.confirmMessages = [
-      'Şartların tamamını onaylıyor musunuz?',
-      'Emin misiniz?',
-      'Kesinlikle emin misiniz?',
-      'Pişman olmayacaksınız değil mi?',
-      'Son şans. Cidden mi?'
+      t('term11.q1'), t('term11.q2'), t('term11.q3'), t('term11.q4'), t('term11.q5')
     ];
     this.renderConfirmStep();
   }
@@ -921,7 +1088,7 @@ class TermsScene extends Phaser.Scene {
     if (this.confirmStep >= this.confirmMessages.length) { this.nextTerm(); return; }
 
     createDialog(this, {
-      title: `ŞARTNAME — Madde 11/12 (Onay ${this.confirmStep + 1}/5)`,
+      title: t('term11.title', { n: this.confirmStep + 1 }),
       body: this.confirmMessages[this.confirmStep],
       h: 240
     }).forEach(d => this.trackSprite(d));
@@ -931,14 +1098,14 @@ class TermsScene extends Phaser.Scene {
     const yesX = isFinalSwap ? GAME_W / 2 + 80 : GAME_W / 2 - 80;
     const noX = isFinalSwap ? GAME_W / 2 - 80 : GAME_W / 2 + 80;
 
-    const yesBtn = makeButton(this, yesX, GAME_H / 2 + 80, 130, 40, 'EVET', () => {
+    const yesBtn = makeButton(this, yesX, GAME_H / 2 + 80, 130, 40, t('btn.yes'), () => {
       this.confirmStep++;
       this.renderConfirmStep();
     });
     this.trackSprite(yesBtn.bg); this.trackSprite(yesBtn.txt);
 
-    const noBtn = makeButton(this, noX, GAME_H / 2 + 80, 130, 40, 'HAYIR', () => {
-      this.flashError('Geri dönüş yok. Sıfırlandı.');
+    const noBtn = makeButton(this, noX, GAME_H / 2 + 80, 130, 40, t('btn.no'), () => {
+      this.flashError(t('term11.reset'));
       this.confirmStep = 0;
       this.time.delayedCall(400, () => this.renderConfirmStep());
     });
@@ -948,8 +1115,8 @@ class TermsScene extends Phaser.Scene {
   // 12. REVERSE MOUSE
   setupTerm12() {
     createDialog(this, {
-      title: 'ŞARTNAME — Madde 12/12',
-      body: 'Madde 12 (son): Cursor X ekseni TERSİNE çalışıyor.\n\nButona ulaşmak için ters yönde hareket et.',
+      title: t('shartname.label', { n: 12 }),
+      body: t('term12.body'),
       h: 280
     }).forEach(d => this.trackSprite(d));
 
@@ -961,7 +1128,7 @@ class TermsScene extends Phaser.Scene {
     this.input.setDefaultCursor('none');
 
     // Buton sağ tarafta
-    const btn = makeButton(this, GAME_W - 150, GAME_H / 2 + 100, 170, 40, 'ONAYLIYORUM', () => this.nextTerm());
+    const btn = makeButton(this, GAME_W - 150, GAME_H / 2 + 100, 170, 40, t('btn.agree'), () => this.nextTerm());
     btn.bg.disableInteractive(); // varsayılan interaktiviteyi kapat — sahte cursor üzerinden tetikleyeceğiz
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
 
@@ -1178,7 +1345,7 @@ class ActionScene extends Phaser.Scene {
       font: 'bold 14px system-ui', color: '#aaa'
     }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(100);
 
-    this.add.text(GAME_W - 20, 16, 'AKSİYON FAZI', {
+    this.add.text(GAME_W - 20, 16, t('action.label'), {
       font: 'bold 16px system-ui', color: '#FFE66D'
     }).setOrigin(1, 0).setScrollFactor(0).setDepth(100);
 
@@ -1258,7 +1425,7 @@ class ActionScene extends Phaser.Scene {
     b.destroy();
     SFX.accept();
     RunStats.bonusCollected++;
-    const labelText = (this.lives < STARTING_LIVES) ? '+1 ♥' : '⭐';
+    const labelText = (this.lives < STARTING_LIVES) ? t('action.lifeBonus') : '⭐';
     if (this.lives < STARTING_LIVES) {
       this.lives++;
       this.updateHUD();
@@ -1294,7 +1461,7 @@ class ActionScene extends Phaser.Scene {
     this.spawnY = this.checkpoint.y - 50;
     SFX.accept();
     // Visual feedback
-    const popup = this.add.text(this.checkpoint.x, this.checkpoint.y - 80, 'KONTROL NOKTASI', {
+    const popup = this.add.text(this.checkpoint.x, this.checkpoint.y - 80, t('action.checkpoint'), {
       font: 'bold 14px system-ui', color: '#4A90E2', stroke: '#000', strokeThickness: 3
     }).setOrigin(0.5);
     this.tweens.add({
@@ -1390,7 +1557,7 @@ class ActionScene extends Phaser.Scene {
     // Mesafe HUD
     if (this.distText) {
       const pct = Math.min(100, Math.round((this.player.x / this.worldW) * 100));
-      this.distText.setText(`İLERLEME: ${pct}%`);
+      this.distText.setText(`${t('action.progress')}: ${pct}%`);
     }
   }
 }
@@ -1406,10 +1573,10 @@ class PauseScene extends Phaser.Scene {
   create() {
     const w = this.scale.width, h = this.scale.height;
     this.add.rectangle(w / 2, h / 2, w, h, 0x000000, 0.7).setInteractive();
-    this.add.text(w / 2, h / 2 - 30, 'DURAKLATILDI', {
+    this.add.text(w / 2, h / 2 - 30, t('pause.title'), {
       font: 'bold 36px system-ui', color: '#FFFFFF'
     }).setOrigin(0.5);
-    this.add.text(w / 2, h / 2 + 20, '[ESC] Devam   ·   [R] Yeniden Başla', {
+    this.add.text(w / 2, h / 2 + 20, t('pause.hint'), {
       font: '18px system-ui', color: '#aaaaaa'
     }).setOrigin(0.5);
 
@@ -1454,16 +1621,14 @@ class GameOverScene extends Phaser.Scene {
     const best = getBestTime();
 
     // Başlık
-    this.add.text(w / 2, h / 2 - 130, this.won ? 'TEBRİKLER — GEÇTİN' : 'OYUN BİTTİ', {
+    this.add.text(w / 2, h / 2 - 130, this.won ? t('gameover.win') : t('gameover.lose'), {
       font: 'bold 48px system-ui',
       color: this.won ? '#FFE66D' : '#FF6B6B',
       stroke: '#000', strokeThickness: 4
     }).setOrigin(0.5);
 
     // Tagline
-    this.add.text(w / 2, h / 2 - 75, this.won
-      ? '12 madde + aksiyon fazı tamamlandı.'
-      : 'Tüm canlarını kaybettin. Şartnameyi geçmiştin, takdir.', {
+    this.add.text(w / 2, h / 2 - 75, this.won ? t('gameover.winSub') : t('gameover.loseSub'), {
       font: '17px system-ui', color: '#ECF0F1', align: 'center'
     }).setOrigin(0.5);
 
@@ -1472,25 +1637,25 @@ class GameOverScene extends Phaser.Scene {
       .setStrokeStyle(1, 0x4A90E2);
 
     const stats = [
-      ['⏱  Süre', RunStats.formatTime(elapsed) + (isNewBest ? '   🏆 YENİ REKOR' : '')],
-      ['💀 Ölüm', RunStats.deathCount.toString()],
-      ['⭐ Toplanan bonus', `${RunStats.bonusCollected}/4`],
-      best ? ['🏆 En iyi rekor', RunStats.formatTime(best)] : null
+      { k: t('gameover.time'), v: RunStats.formatTime(elapsed) + (isNewBest ? '   ' + t('gameover.newRecord') : ''), highlight: isNewBest },
+      { k: t('gameover.deaths'), v: RunStats.deathCount.toString() },
+      { k: t('gameover.bonus'), v: `${RunStats.bonusCollected}/4` },
+      best ? { k: t('gameover.bestRecord'), v: RunStats.formatTime(best) } : null
     ].filter(Boolean);
 
     stats.forEach((row, i) => {
       const y = h / 2 - 30 + i * 25;
-      this.add.text(w / 2 - 200, y, row[0], {
+      this.add.text(w / 2 - 200, y, row.k, {
         font: '15px system-ui', color: '#aac'
       }).setOrigin(0, 0.5);
-      this.add.text(w / 2 + 200, y, row[1], {
+      this.add.text(w / 2 + 200, y, row.v, {
         font: 'bold 15px system-ui',
-        color: row[1].includes('REKOR') ? '#FFE66D' : '#ECF0F1'
+        color: row.highlight ? '#FFE66D' : '#ECF0F1'
       }).setOrigin(1, 0.5);
     });
 
     // Restart prompt
-    const restart = this.add.text(w / 2, h / 2 + 130, '[R] Tekrar Başla', {
+    const restart = this.add.text(w / 2, h / 2 + 130, t('gameover.restart'), {
       font: 'bold 22px system-ui', color: '#4ECDC4'
     }).setOrigin(0.5);
     this.tweens.add({ targets: restart, alpha: 0.4, duration: 800, yoyo: true, repeat: -1 });
