@@ -116,9 +116,15 @@ const I18N = {
     'mode.normal': 'NORMAL',
     'mode.hardcore': 'HARDCORE',
     'mode.normalDesc': '5 can · checkpoint var',
-    'mode.hardcoreDesc': '⚠ 1 can · checkpoint yok',
+    'mode.hardcoreDesc': '⚠ 1 can · checkpoint yok · rastgele 12 madde',
     'gameover.modeNormal': 'Mod: NORMAL',
-    'gameover.modeHardcore': 'Mod: HARDCORE'
+    'gameover.modeHardcore': 'Mod: HARDCORE',
+    'term13.body': 'Sırasıyla 1, 2 ve 3 numaralı kutuları onaylayın.\nYanlış sıra → reset.',
+    'term13.wrong': 'Sıra bozuldu. Sıfırlandı.',
+    'term14.body': 'Aşağıdaki renklerden EN KOYU olanını seçin.',
+    'term14.wrong': 'Yanlış renk.',
+    'term15.body': 'İnsan zekası testi.\nAşağıdaki ifadeyi hesaplayıp sonucu yazın.',
+    'term15.wrong': 'Yanlış. Tekrar dene.'
   },
   en: {
     'boot.title': 'USER AGREEMENT',
@@ -189,9 +195,15 @@ const I18N = {
     'mode.normal': 'NORMAL',
     'mode.hardcore': 'HARDCORE',
     'mode.normalDesc': '5 lives · checkpoint enabled',
-    'mode.hardcoreDesc': '⚠ 1 life · no checkpoint',
+    'mode.hardcoreDesc': '⚠ 1 life · no checkpoint · random 12 articles',
     'gameover.modeNormal': 'Mode: NORMAL',
-    'gameover.modeHardcore': 'Mode: HARDCORE'
+    'gameover.modeHardcore': 'Mode: HARDCORE',
+    'term13.body': 'Click the boxes in order: 1, 2, then 3.\nWrong order → reset.',
+    'term13.wrong': 'Order broken. Reset.',
+    'term14.body': 'Pick the DARKEST color below.',
+    'term14.wrong': 'Wrong color.',
+    'term15.body': 'Human intelligence test.\nCompute the expression and type the result.',
+    'term15.wrong': 'Wrong. Try again.'
   }
 };
 
@@ -620,6 +632,16 @@ class TermsScene extends Phaser.Scene {
     this.termTimer = null;
     this.termInterval = null;
 
+    // Term order — Normal modda 1-12 sıralı; Hardcore'da pool'lardan rastgele 12
+    if (MODE === 'hardcore') {
+      const easy = Phaser.Utils.Array.Shuffle([1, 2, 3, 4, 13]).slice(0, 4);
+      const med  = Phaser.Utils.Array.Shuffle([5, 6, 7, 8, 14]).slice(0, 4);
+      const hard = Phaser.Utils.Array.Shuffle([9, 10, 11, 12, 15]).slice(0, 4);
+      this.termOrder = [...easy, ...med, ...hard];
+    } else {
+      this.termOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    }
+
     // Progress badge
     this.add.rectangle(GAME_W - 90, 30, 150, 30, 0x0F1622, 0.85).setStrokeStyle(1, 0x4A90E2);
     this.progressText = this.add.text(GAME_W - 90, 30, '', {
@@ -671,14 +693,20 @@ class TermsScene extends Phaser.Scene {
   loadTerm(index) {
     this.clearTermArtifacts();
     this.currentTerm = index;
-    this.progressText.setText(`Madde ${Math.min(index + 1, TOTAL_TERMS)}/${TOTAL_TERMS}`);
-    const fnName = `setupTerm${index + 1}`;
-    if (typeof this[fnName] === 'function') {
-      this[fnName]();
-    } else {
+    if (index >= TOTAL_TERMS) {
       // Tüm 12 bitti → Action phase
       this.cameras.main.fadeOut(300, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('Action'));
+      return;
+    }
+    this.progressText.setText(`${t('progress.term')} ${Math.min(index + 1, TOTAL_TERMS)}/${TOTAL_TERMS}`);
+    const realTermNum = this.termOrder[index]; // 1..15
+    const fnName = `setupTerm${realTermNum}`;
+    if (typeof this[fnName] === 'function') {
+      this[fnName]();
+    } else {
+      // unknown term — atla
+      this.loadTerm(index + 1);
     }
   }
 
@@ -753,7 +781,7 @@ class TermsScene extends Phaser.Scene {
     [GAME_W / 2 - 270, GAME_W / 2 - 90, GAME_W / 2 + 90, GAME_W / 2 + 270].forEach((px, i) => {
       const btn = makeButton(this, px, GAME_H / 2 + 100, 140, 40, t('btn.agree'), () => {
         if (i === correct) this.nextTerm();
-        else { this.flashError(t('term3.wrong')); this.time.delayedCall(400, () => this.loadTerm(2)); }
+        else { this.flashError(t('term3.wrong')); this.time.delayedCall(400, () => this.loadTerm(this.currentTerm)); }
       });
       this.trackSprite(btn.bg); this.trackSprite(btn.txt);
     });
@@ -831,7 +859,7 @@ class TermsScene extends Phaser.Scene {
     };
     const submit = () => {
       if (parseInt(this.captchaInput, 10) === this.captchaCount) this.nextTerm();
-      else { this.flashError(t('term5.wrong')); this.time.delayedCall(400, () => this.loadTerm(4)); }
+      else { this.flashError(t('term5.wrong')); this.time.delayedCall(400, () => this.loadTerm(this.currentTerm)); }
     };
 
     for (let d = 0; d <= 9; d++) {
@@ -1019,7 +1047,7 @@ class TermsScene extends Phaser.Scene {
       // Engel çarpışma
       if (Phaser.Geom.Intersects.RectangleToRectangle(drag.getBounds(), blocker.getBounds())) {
         this.flashError(t('term8.hit'));
-        this.time.delayedCall(300, () => this.loadTerm(7));
+        this.time.delayedCall(300, () => this.loadTerm(this.currentTerm));
       }
       // Hedef
       else if (Phaser.Geom.Intersects.RectangleToRectangle(drag.getBounds(), target.getBounds())) {
@@ -1107,15 +1135,18 @@ class TermsScene extends Phaser.Scene {
   }
 
   term10Cycle() {
-    if (!this.term10Active || this.currentTerm !== 9 || !this.term10Btn) return;
+    const realTerm = this.termOrder ? this.termOrder[this.currentTerm] : null;
+    if (!this.term10Active || realTerm !== 10 || !this.term10Btn) return;
     this.term10Btn.bg.setVisible(true);
     this.term10Btn.txt.setVisible(true);
     this.termTimer = this.time.delayedCall(this.visibleDuration, () => {
-      if (!this.term10Active || this.currentTerm !== 9 || !this.term10Btn) return;
+      const rt = this.termOrder ? this.termOrder[this.currentTerm] : null;
+      if (!this.term10Active || rt !== 10 || !this.term10Btn) return;
       this.term10Btn.bg.setVisible(false);
       this.term10Btn.txt.setVisible(false);
       this.termTimer = this.time.delayedCall(500, () => {
-        if (!this.term10Active || this.currentTerm !== 9) return;
+        const rt2 = this.termOrder ? this.termOrder[this.currentTerm] : null;
+        if (!this.term10Active || rt2 !== 10) return;
         this.attemptCount++;
         if (this.attemptCount === 3) {
           this.visibleDuration = 1500;
@@ -1212,10 +1243,163 @@ class TermsScene extends Phaser.Scene {
     }
   }
 
+  // ============ TERM 13: ÜÇLÜ ONAY ============
+  setupTerm13() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term13.body'),
+      h: 260
+    }).forEach(d => this.trackSprite(d));
+
+    this.tripleStep = 0; // 0 → 1 → 2 → next
+    const positions = [GAME_W / 2 - 200, GAME_W / 2, GAME_W / 2 + 200];
+    this._tripleBtns = positions.map((px, i) => {
+      const btn = makeButton(this, px, GAME_H / 2 + 100, 130, 50, `${i + 1}`, () => {
+        if (i === this.tripleStep) {
+          // doğru sıra
+          btn.bg.setFillStyle(COLORS.ACCENT_OK);
+          btn.txt.setColor('#fff');
+          btn.bg.disableInteractive();
+          this.tripleStep++;
+          if (this.tripleStep >= 3) {
+            this.time.delayedCall(200, () => this.nextTerm());
+          }
+        } else {
+          this.flashError(t('term13.wrong'));
+          this.time.delayedCall(400, () => this.loadTerm(this.currentTerm));
+        }
+      });
+      this.trackSprite(btn.bg); this.trackSprite(btn.txt);
+      return btn;
+    });
+  }
+
+  // ============ TERM 14: EN KOYU RENGİ SEÇ ============
+  setupTerm14() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term14.body'),
+      h: 240
+    }).forEach(d => this.trackSprite(d));
+
+    // 5 mavi tonu rastgele dağıtılmış
+    const tones = [0x6FA8DC, 0x4A90E2, 0x2C5F8D, 0x1A3A5C, 0x3B5998];
+    // En koyu = en küçük lightness değeri (subjective): 0x1A3A5C
+    const darkest = 0x1A3A5C;
+    // Karıştır
+    const shuffled = Phaser.Utils.Array.Shuffle(tones.slice());
+    const correctIdx = shuffled.indexOf(darkest);
+
+    shuffled.forEach((color, i) => {
+      const x = GAME_W / 2 - (5 - 1) * 50 + i * 100;
+      const sw = this.add.rectangle(x, GAME_H / 2 + 100, 80, 80, color)
+        .setStrokeStyle(2, 0xffffff, 0.5).setInteractive({ useHandCursor: true });
+      sw.on('pointerdown', () => {
+        SFX.click();
+        if (i === correctIdx) this.nextTerm();
+        else { this.flashError(t('term14.wrong')); this.time.delayedCall(400, () => this.loadTerm(this.currentTerm)); }
+      });
+      this.trackSprite(sw);
+    });
+  }
+
+  // ============ TERM 15: MATH KİLİDİ ============
+  setupTerm15() {
+    // Rastgele basit ifade: a + b * c (operator precedence test)
+    const a = Phaser.Math.Between(2, 9);
+    const b = Phaser.Math.Between(2, 6);
+    const c = Phaser.Math.Between(2, 5);
+    const expr = `${a} + ${b} × ${c}`;
+    const correct = a + b * c; // doğru cevap (precedence)
+
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term15.body'),
+      h: 320
+    }).forEach(d => this.trackSprite(d));
+
+    const exprText = this.add.text(GAME_W / 2, GAME_H / 2 + 20, expr + ' = ?', {
+      font: 'bold 32px monospace', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(exprText);
+
+    this.mathInput = '';
+    const inputBg = this.add.rectangle(GAME_W / 2, GAME_H / 2 + 80, 120, 36, COLORS.INPUT_BG)
+      .setStrokeStyle(1, COLORS.DIALOG_BORDER);
+    const inputText = this.add.text(GAME_W / 2, GAME_H / 2 + 80, '_', {
+      font: 'bold 20px monospace', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(inputBg); this.trackSprite(inputText);
+
+    const push = (d) => {
+      if (this.mathInput.length < 3) {
+        this.mathInput += d.toString();
+        inputText.setText(this.mathInput);
+        SFX.typing();
+      }
+    };
+    const pop = () => {
+      this.mathInput = this.mathInput.slice(0, -1);
+      inputText.setText(this.mathInput || '_');
+    };
+    const submit = () => {
+      if (parseInt(this.mathInput, 10) === correct) this.nextTerm();
+      else { this.flashError(t('term15.wrong')); this.time.delayedCall(400, () => this.loadTerm(this.currentTerm)); }
+    };
+
+    for (let d = 0; d <= 9; d++) {
+      this.input.keyboard.on(`keydown-${d}`, () => push(d));
+    }
+    this.input.keyboard.on('keydown-BACKSPACE', pop);
+    this.input.keyboard.on('keydown-ENTER', submit);
+
+    if (IS_TOUCH) {
+      // Mini keypad altta
+      const padY = GAME_H - 180;
+      const cellW = 50, cellH = 38, gap = 6;
+      const startX = GAME_W / 2 - (5 * (cellW + gap)) / 2 + cellW / 2;
+      const drawCell = (col, row, label, onTap, color = COLORS.BTN_NORMAL, txtColor = HEX.TEXT) => {
+        const x = startX + col * (cellW + gap);
+        const y = padY + row * (cellH + gap);
+        const bg = this.add.rectangle(x, y, cellW, cellH, color)
+          .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
+        const txt = this.add.text(x, y, label, {
+          font: 'bold 15px system-ui', color: txtColor
+        }).setOrigin(0.5).setDepth(151);
+        bg.setInteractive({ useHandCursor: true }).on('pointerdown', () => { SFX.click(); onTap(); });
+        this.trackSprite(bg); this.trackSprite(txt);
+      };
+      for (let i = 0; i < 5; i++) drawCell(i, 0, (i + 1).toString(), () => push(i + 1));
+      for (let i = 0; i < 5; i++) {
+        const d = i === 4 ? 0 : i + 6;
+        drawCell(i, 1, d.toString(), () => push(d));
+      }
+      const bx = startX + 0.5 * (cellW + gap);
+      const by = padY + 2 * (cellH + gap);
+      const backBg = this.add.rectangle(bx, by, cellW * 2 + gap, cellH, 0xC0C0C0)
+        .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
+      const backTxt = this.add.text(bx, by, t('btn.delete'), {
+        font: 'bold 14px system-ui', color: HEX.TEXT
+      }).setOrigin(0.5).setDepth(151);
+      backBg.setInteractive({ useHandCursor: true }).on('pointerdown', () => { SFX.click(); pop(); });
+      this.trackSprite(backBg); this.trackSprite(backTxt);
+
+      const sx = startX + 3.5 * (cellW + gap);
+      const sendBg = this.add.rectangle(sx, by, cellW * 3 + gap * 2, cellH, COLORS.ACCENT_OK, 0.85)
+        .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
+      const sendTxt = this.add.text(sx, by, t('btn.send'), {
+        font: 'bold 14px system-ui', color: '#fff'
+      }).setOrigin(0.5).setDepth(151);
+      sendBg.setInteractive({ useHandCursor: true }).on('pointerdown', () => { SFX.click(); submit(); });
+      this.trackSprite(sendBg); this.trackSprite(sendTxt);
+    }
+  }
+
   update() {
-    if (this.currentTerm === 6) this.updateTerm7();        // term 7 = index 6
-    else if (this.currentTerm === 8) this.updateTerm9();   // term 9 = index 8
-    else if (this.currentTerm === 11) this.updateTerm12(); // term 12 = index 11
+    const realTerm = this.termOrder ? this.termOrder[this.currentTerm] : (this.currentTerm + 1);
+    if (realTerm === 7) this.updateTerm7();
+    else if (realTerm === 9) this.updateTerm9();
+    else if (realTerm === 12) this.updateTerm12();
   }
 }
 
