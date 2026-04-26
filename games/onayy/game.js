@@ -137,7 +137,53 @@ const I18N = {
       'Sistem: Onayınız depolandı. Tekrar onay alacağız zaten.',
       'İpucu: Aceleci olmak hata payını artırır.',
       'TeknoSafir: Kullanıcı sadakati doğrulanıyor...'
-    ]
+    ],
+    'lore.bulletinTitle': '📰 TEKNOSAFİR BÜLTENİ',
+    'lore.bulletins': [
+      'Yeni KVKK güncellemesi: Verileriniz daha güvenli ama daha az sizin.',
+      'Q3 raporuna göre kullanıcılar onay süresinde %12 hızlandı.',
+      'Yıllık müşteri memnuniyeti %3. Kayda değer.',
+      'Şartname versiyon güncellemesi: 11.0.0 → 12.7.4 (geriye uyumlu değil).',
+      'Hukuk departmanı: "Hata değil, beklenen kullanıcı davranışıdır."',
+      'TeknoSafir: 47 ülkede 0 kullanıcının veri talebi karşılandı.'
+    ],
+    'lore.ceoQuotes': [
+      '"Kullanıcılarımızı seviyoruz. Verilerini de." — CEO, 2023',
+      '"Onay bir hak değil, sürekli bir görevdir." — TeknoSafir Manifesto',
+      '"En iyi sözleşme, hiç okunmayan sözleşmedir." — İcra Kurulu',
+      '"Şartlarımızı kabul edenler, geleceği şekillendirir." — Yatırımcı Sunumu',
+      '"Vazgeçmek yok, sadece okuyamamak vardır." — Kullanıcı Deneyimi Direktörü'
+    ],
+    'leaderboard.title': '🏆 SON 5 RUN',
+    'leaderboard.empty': 'Henüz bitirilmiş bir run yok.',
+    'leaderboard.cols': 'Mod · Süre · Ölüm · ⭐',
+    'achievements.title': '🎖 BAŞARIMLAR',
+    'achievements.unlocked': 'Açıldı',
+    'achievements.locked': 'Kilitli',
+    'achievements.firstWin.name': 'İlk Geçiş',
+    'achievements.firstWin.desc': 'Şartnameyi geçtin.',
+    'achievements.hardcore.name': 'Hardcore Hayatta Kalan',
+    'achievements.hardcore.desc': 'HARDCORE modu geç.',
+    'achievements.speed.name': 'Hızlı Onaycı',
+    'achievements.speed.desc': '60 saniye altında bitir.',
+    'achievements.noDeath.name': 'Ölümsüz',
+    'achievements.noDeath.desc': 'Hiç ölmeden geç.',
+    'achievements.allBonus.name': 'Yıldız Avcısı',
+    'achievements.allBonus.desc': '4/4 bonusu topla.',
+    'achievement.unlocked': '🎖 BAŞARIM AÇILDI',
+    'term16.body': 'Madde 16: Tolerans seviyenizi SIFIRA indirin.\n\nKaydırıcı yukarı kayıyor.',
+    'term17.body': 'Madde 17: Tam {n} kez tıklayın. Fazla → reset.',
+    'term17.label': 'Tıklamalar',
+    'term17.over': 'Çok hızlı tıkladın. Sıfırlandı.',
+    'term18.body': 'Madde 18: Butonu {sec} saniye basılı tutun.\nBırakırsanız sıfırlanır.',
+    'term18.holdHint': 'Basılı tut...',
+    'term19.body': 'Madde 19: Renkli sıra gösterilecek.\nAynı sırayı tıkla.',
+    'term19.watch': 'İzle...',
+    'term19.repeat': 'Aynı sırayı tıkla',
+    'term19.wrong': 'Sıra bozuldu.',
+    'term20.body': 'Madde 20: Ok DOĞRU yöne baktığında DUR\'a tıkla.',
+    'term20.target': 'Hedef yön',
+    'term20.stop': 'DUR'
   },
   en: {
     'boot.title': 'USER AGREEMENT',
@@ -229,7 +275,53 @@ const I18N = {
       'System: Consent stored. We will ask again anyway.',
       'Tip: Haste increases error rate.',
       'TeknoSafir: verifying user loyalty...'
-    ]
+    ],
+    'lore.bulletinTitle': '📰 TEKNOSAFİR BULLETIN',
+    'lore.bulletins': [
+      'New GDPR update: Your data is safer, but less yours.',
+      'Q3 report: users 12% faster on consent screens.',
+      'Annual customer satisfaction: 3%. Notable.',
+      'Contract version update: 11.0.0 → 12.7.4 (not backwards compatible).',
+      'Legal: "Not a bug, expected user behavior."',
+      'TeknoSafir: 47 countries, 0 data requests fulfilled.'
+    ],
+    'lore.ceoQuotes': [
+      '"We love our users. And their data." — CEO, 2023',
+      '"Consent is not a right, but a continuous duty." — TeknoSafir Manifesto',
+      '"The best contract is the unread one." — Executive Board',
+      '"Those who accept our terms shape the future." — Investor Pitch',
+      '"There is no quitting, only failing to read." — UX Director'
+    ],
+    'leaderboard.title': '🏆 LAST 5 RUNS',
+    'leaderboard.empty': 'No completed runs yet.',
+    'leaderboard.cols': 'Mode · Time · Deaths · ⭐',
+    'achievements.title': '🎖 ACHIEVEMENTS',
+    'achievements.unlocked': 'Unlocked',
+    'achievements.locked': 'Locked',
+    'achievements.firstWin.name': 'First Win',
+    'achievements.firstWin.desc': 'Passed the terms.',
+    'achievements.hardcore.name': 'Hardcore Survivor',
+    'achievements.hardcore.desc': 'Beat HARDCORE mode.',
+    'achievements.speed.name': 'Speed Signer',
+    'achievements.speed.desc': 'Finish under 60 seconds.',
+    'achievements.noDeath.name': 'Immortal',
+    'achievements.noDeath.desc': 'Win without dying.',
+    'achievements.allBonus.name': 'Star Hunter',
+    'achievements.allBonus.desc': 'Collect all 4 bonuses.',
+    'achievement.unlocked': '🎖 ACHIEVEMENT UNLOCKED',
+    'term16.body': 'Article 16: Lower tolerance to ZERO.\n\nThe slider drifts up.',
+    'term17.body': 'Article 17: Click exactly {n} times. Over → reset.',
+    'term17.label': 'Clicks',
+    'term17.over': 'Too many clicks. Reset.',
+    'term18.body': 'Article 18: Hold the button for {sec} seconds.\nReleasing resets.',
+    'term18.holdHint': 'Hold...',
+    'term19.body': 'Article 19: A color sequence will play.\nClick the same order.',
+    'term19.watch': 'Watch...',
+    'term19.repeat': 'Repeat the order',
+    'term19.wrong': 'Sequence broken.',
+    'term20.body': 'Article 20: Click STOP when the arrow points to the TARGET.',
+    'term20.target': 'Target direction',
+    'term20.stop': 'STOP'
   }
 };
 
@@ -676,11 +768,11 @@ class TermsScene extends Phaser.Scene {
     this.termTimer = null;
     this.termInterval = null;
 
-    // Term order — Normal modda 1-12 sıralı; Hardcore'da pool'lardan rastgele 12
+    // Term order — Normal: sıralı 1-12; Hardcore: pool'lardan rastgele 12 (toplam 20'den)
     if (MODE === 'hardcore') {
-      const easy = Phaser.Utils.Array.Shuffle([1, 2, 3, 4, 13]).slice(0, 4);
-      const med  = Phaser.Utils.Array.Shuffle([5, 6, 7, 8, 14]).slice(0, 4);
-      const hard = Phaser.Utils.Array.Shuffle([9, 10, 11, 12, 15]).slice(0, 4);
+      const easy = Phaser.Utils.Array.Shuffle([1, 2, 3, 4, 13, 17]).slice(0, 4);
+      const med  = Phaser.Utils.Array.Shuffle([5, 6, 7, 8, 14, 16, 19]).slice(0, 4);
+      const hard = Phaser.Utils.Array.Shuffle([9, 10, 11, 12, 15, 18, 20]).slice(0, 4);
       this.termOrder = [...easy, ...med, ...hard];
     } else {
       this.termOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -1461,11 +1553,281 @@ class TermsScene extends Phaser.Scene {
     }
   }
 
+  // ============ TERM 16: TERSİNE SLIDER (100→0, kayar yukarı) ============
+  setupTerm16() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term16.body'),
+      h: 280
+    }).forEach(d => this.trackSprite(d));
+
+    const sliderY = GAME_H / 2 + 70;
+    const trackX = GAME_W / 2;
+    const trackW = 360;
+    const minX = trackX - trackW / 2;
+    const maxX = trackX + trackW / 2;
+    const track = this.add.rectangle(trackX, sliderY, trackW, 6, 0xCCCCCC);
+    this.trackSprite(track);
+
+    let value = 100;
+    const knob = this.add.circle(maxX, sliderY, 14, COLORS.SPIKE).setStrokeStyle(2, 0xFFFFFF);
+    knob.setInteractive({ draggable: true, useHandCursor: true });
+    this.input.setDraggable(knob);
+    this.trackSprite(knob);
+
+    const valueText = this.add.text(GAME_W / 2, sliderY - 30, `${t('term6.value')}: 100`, {
+      font: 'bold 16px system-ui', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(valueText);
+
+    knob.on('drag', (pointer, dragX) => {
+      const cx = Phaser.Math.Clamp(dragX, minX, maxX);
+      knob.x = cx;
+      value = Math.round(((cx - minX) / trackW) * 100);
+      valueText.setText(`${t('term6.value')}: ${value}`);
+      if (value <= 0) this.nextTerm();
+    });
+
+    // Direnme: yukarı kayıyor (her 200ms +3)
+    this.termInterval = this.time.addEvent({
+      delay: 200, loop: true,
+      callback: () => {
+        if (value > 0 && value < 100) {
+          value = Math.min(100, value + 3);
+          knob.x = minX + (value / 100) * trackW;
+          valueText.setText(`${t('term6.value')}: ${value}`);
+        }
+      }
+    });
+  }
+
+  // ============ TERM 17: CLICK SAYMA (TAM N kez) ============
+  setupTerm17() {
+    const target = Phaser.Math.Between(5, 11);
+    let count = 0;
+
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term17.body', { n: target }),
+      h: 260
+    }).forEach(d => this.trackSprite(d));
+
+    const counterText = this.add.text(GAME_W / 2, GAME_H / 2 + 30, `${t('term17.label')}: 0/${target}`, {
+      font: 'bold 28px system-ui', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(counterText);
+
+    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 100, 200, 44, t('btn.agree'), () => {
+      count++;
+      counterText.setText(`${t('term17.label')}: ${count}/${target}`);
+      if (count === target) {
+        this.time.delayedCall(300, () => this.nextTerm());
+      } else if (count > target) {
+        this.flashError(t('term17.over'));
+        this.time.delayedCall(400, () => this.loadTerm(this.currentTerm));
+      }
+    });
+    this.trackSprite(btn.bg); this.trackSprite(btn.txt);
+  }
+
+  // ============ TERM 18: LONG PRESS (3 sn basılı tut) ============
+  setupTerm18() {
+    const targetSec = 3;
+    let holding = false;
+    let progress = 0;
+
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term18.body', { sec: targetSec }),
+      h: 260
+    }).forEach(d => this.trackSprite(d));
+
+    // Progress bar
+    const barY = GAME_H / 2 + 60;
+    const barBg = this.add.rectangle(GAME_W / 2, barY, 320, 18, 0xCCCCCC).setStrokeStyle(1, COLORS.DIALOG_BORDER);
+    const bar = this.add.rectangle(GAME_W / 2 - 160, barY, 0, 18, COLORS.ACCENT_OK).setOrigin(0, 0.5);
+    this.trackSprite(barBg); this.trackSprite(bar);
+
+    const hint = this.add.text(GAME_W / 2, GAME_H / 2 + 90, t('term18.holdHint'), {
+      font: 'italic 12px system-ui', color: HEX.TEXT_HINT
+    }).setOrigin(0.5);
+    this.trackSprite(hint);
+
+    const btnBg = this.add.rectangle(GAME_W / 2, GAME_H / 2 + 130, 200, 44, COLORS.BTN_NORMAL).setStrokeStyle(1, COLORS.DIALOG_BORDER);
+    const btnTxt = this.add.text(GAME_W / 2, GAME_H / 2 + 130, t('btn.agree'), {
+      font: 'bold 13px system-ui', color: HEX.TEXT
+    }).setOrigin(0.5);
+    btnBg.setInteractive({ useHandCursor: true });
+    this.trackSprite(btnBg); this.trackSprite(btnTxt);
+
+    btnBg.on('pointerdown', () => {
+      holding = true;
+      btnBg.setFillStyle(COLORS.BTN_HOVER);
+      btnTxt.setColor(HEX.TEXT_LIGHT);
+    });
+    const releaseHandler = () => {
+      if (holding && progress < targetSec * 1000) {
+        // Reset
+        holding = false;
+        progress = 0;
+        bar.width = 0;
+        btnBg.setFillStyle(COLORS.BTN_NORMAL);
+        btnTxt.setColor(HEX.TEXT);
+      } else {
+        holding = false;
+      }
+    };
+    btnBg.on('pointerup', releaseHandler);
+    btnBg.on('pointerout', releaseHandler);
+
+    this.termInterval = this.time.addEvent({
+      delay: 50, loop: true,
+      callback: () => {
+        if (holding) {
+          progress = Math.min(targetSec * 1000, progress + 50);
+          bar.width = (320 * progress) / (targetSec * 1000);
+          if (progress >= targetSec * 1000) this.nextTerm();
+        }
+      }
+    });
+  }
+
+  // ============ TERM 19: RENK DİZİSİ (Simon-tarzı) ============
+  setupTerm19() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term19.body'),
+      h: 260
+    }).forEach(d => this.trackSprite(d));
+
+    const colors = [
+      { bg: 0xFF6B6B, lit: 0xFFAAAA },
+      { bg: 0x4ECDC4, lit: 0x88EEE5 },
+      { bg: 0xFFE66D, lit: 0xFFF6A8 },
+      { bg: 0x4A90E2, lit: 0x88BFFF }
+    ];
+    const seq = [];
+    for (let i = 0; i < 4; i++) seq.push(Phaser.Math.Between(0, 3));
+
+    const buttons = [];
+    const startX = GAME_W / 2 - 165;
+    colors.forEach((c, i) => {
+      const x = startX + i * 110;
+      const y = GAME_H / 2 + 80;
+      const sw = this.add.rectangle(x, y, 90, 50, c.bg).setStrokeStyle(2, 0xffffff, 0.6);
+      buttons.push({ rect: sw, base: c.bg, lit: c.lit });
+      this.trackSprite(sw);
+    });
+
+    const label = this.add.text(GAME_W / 2, GAME_H / 2 + 30, t('term19.watch'), {
+      font: 'bold 15px system-ui', color: HEX.TEXT_HINT
+    }).setOrigin(0.5);
+    this.trackSprite(label);
+
+    let inputIdx = 0;
+    let listening = false;
+
+    const flashOnce = (idx, delay) => {
+      this.time.delayedCall(delay, () => {
+        const b = buttons[idx];
+        if (!b || !b.rect.scene) return;
+        b.rect.setFillStyle(b.lit);
+        SFX.click();
+        this.time.delayedCall(300, () => {
+          if (b.rect.scene) b.rect.setFillStyle(b.base);
+        });
+      });
+    };
+
+    // Show sequence
+    seq.forEach((idx, i) => flashOnce(idx, 600 + i * 600));
+
+    this.time.delayedCall(600 + seq.length * 600 + 200, () => {
+      label.setText(t('term19.repeat'));
+      label.setColor(HEX.OK);
+      listening = true;
+      buttons.forEach((b, i) => {
+        b.rect.setInteractive({ useHandCursor: true });
+        b.rect.on('pointerdown', () => {
+          if (!listening) return;
+          // visual feedback
+          b.rect.setFillStyle(b.lit);
+          SFX.click();
+          this.time.delayedCall(150, () => { if (b.rect.scene) b.rect.setFillStyle(b.base); });
+          if (seq[inputIdx] === i) {
+            inputIdx++;
+            if (inputIdx >= seq.length) {
+              listening = false;
+              this.nextTerm();
+            }
+          } else {
+            listening = false;
+            this.flashError(t('term19.wrong'));
+            this.time.delayedCall(400, () => this.loadTerm(this.currentTerm));
+          }
+        });
+      });
+    });
+  }
+
+  // ============ TERM 20: SPINNER (yön tahmin) ============
+  setupTerm20() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term20.body'),
+      h: 260
+    }).forEach(d => this.trackSprite(d));
+
+    const dirs = ['↑', '→', '↓', '←'];
+    const dirAngles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI];
+    const targetIdx = Phaser.Math.Between(0, 3);
+
+    this.add.text(GAME_W / 2, GAME_H / 2 + 20, `${t('term20.target')}: ${dirs[targetIdx]}`, {
+      font: 'bold 22px system-ui', color: HEX.WARN
+    }).setOrigin(0.5).setStroke('#000', 2);
+    // not tracked separately because it's via add.text, scene cleanup handles it via children
+    // but yes track
+    const targetText = this.children.list[this.children.list.length - 1];
+    this.trackSprite(targetText);
+
+    // Dönen ok
+    const arrow = this.add.text(GAME_W / 2, GAME_H / 2 + 80, '➤', {
+      font: 'bold 50px system-ui', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(arrow);
+    arrow.rotation = -Math.PI / 2;
+
+    // Stop button
+    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 150, 160, 42, t('term20.stop'), () => {
+      // Toleranslı yön check (±22.5°)
+      const targetAngle = dirAngles[targetIdx];
+      let diff = Math.abs(arrow.rotation - targetAngle);
+      // Normalize to 0..PI
+      while (diff > Math.PI) diff = Math.abs(diff - 2 * Math.PI);
+      if (diff < Math.PI / 8) {
+        this.nextTerm();
+      } else {
+        this.flashError(t('term19.wrong'));
+        this.time.delayedCall(400, () => this.loadTerm(this.currentTerm));
+      }
+    });
+    this.trackSprite(btn.bg); this.trackSprite(btn.txt);
+
+    this._term20Arrow = arrow;
+  }
+
+  updateTerm20() {
+    if (this._term20Arrow && this._term20Arrow.scene) {
+      this._term20Arrow.rotation += 0.06;
+    }
+  }
+
   update() {
     const realTerm = this.termOrder ? this.termOrder[this.currentTerm] : (this.currentTerm + 1);
     if (realTerm === 7) this.updateTerm7();
     else if (realTerm === 9) this.updateTerm9();
     else if (realTerm === 12) this.updateTerm12();
+    else if (realTerm === 20) this.updateTerm20();
   }
 }
 
