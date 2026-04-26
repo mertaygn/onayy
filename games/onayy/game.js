@@ -37,6 +37,12 @@ const GAME_H = 640;
 const TOTAL_TERMS = 12;
 const STARTING_LIVES = 5;
 
+// Touch / mobile detection — pointer event'le destekli cihaz
+const IS_TOUCH = (typeof window !== 'undefined') && (
+  'ontouchstart' in window ||
+  (navigator.maxTouchPoints && navigator.maxTouchPoints > 0)
+);
+
 // =========================================================
 // SFX — Web Audio API prosedürel
 // =========================================================
@@ -582,23 +588,72 @@ class TermsScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.trackSprite(hint);
 
-    for (let d = 0; d <= 9; d++) {
-      this.input.keyboard.on(`keydown-${d}`, () => {
-        if (this.captchaInput.length < 2) {
-          this.captchaInput += d.toString();
-          inputText.setText(this.captchaInput);
-          SFX.typing();
-        }
-      });
-    }
-    this.input.keyboard.on('keydown-BACKSPACE', () => {
+    const pushDigit = (d) => {
+      if (this.captchaInput.length < 2) {
+        this.captchaInput += d.toString();
+        inputText.setText(this.captchaInput);
+        SFX.typing();
+      }
+    };
+    const popDigit = () => {
       this.captchaInput = this.captchaInput.slice(0, -1);
       inputText.setText(this.captchaInput || '_');
-    });
-    this.input.keyboard.on('keydown-ENTER', () => {
+    };
+    const submit = () => {
       if (parseInt(this.captchaInput, 10) === this.captchaCount) this.nextTerm();
       else { this.flashError('Yanlış. Robot olabilir misin?'); this.time.delayedCall(400, () => this.loadTerm(4)); }
-    });
+    };
+
+    for (let d = 0; d <= 9; d++) {
+      this.input.keyboard.on(`keydown-${d}`, () => pushDigit(d));
+    }
+    this.input.keyboard.on('keydown-BACKSPACE', popDigit);
+    this.input.keyboard.on('keydown-ENTER', submit);
+
+    // Touch keypad — mobile için on-screen 0-9 + ⌫ + GÖNDER
+    if (IS_TOUCH) {
+      const padBaseY = GAME_H - 220;
+      const cellW = 50, cellH = 40, gap = 6;
+      const startX = GAME_W / 2 - (5 * (cellW + gap)) / 2 + cellW / 2;
+      const drawCell = (col, row, label, onTap, color = COLORS.BTN_NORMAL, textColor = HEX.TEXT) => {
+        const x = startX + col * (cellW + gap);
+        const y = padBaseY + row * (cellH + gap);
+        const bg = this.add.rectangle(x, y, cellW, cellH, color)
+          .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
+        const t = this.add.text(x, y, label, {
+          font: 'bold 16px system-ui', color: textColor
+        }).setOrigin(0.5).setDepth(151);
+        bg.setInteractive({ useHandCursor: true })
+          .on('pointerdown', () => { SFX.click(); onTap(); });
+        this.trackSprite(bg); this.trackSprite(t);
+      };
+      // Row 0: 1-2-3-4-5
+      for (let i = 0; i < 5; i++) drawCell(i, 0, (i + 1).toString(), () => pushDigit(i + 1));
+      // Row 1: 6-7-8-9-0
+      for (let i = 0; i < 5; i++) {
+        const d = i === 4 ? 0 : i + 6;
+        drawCell(i, 1, d.toString(), () => pushDigit(d));
+      }
+      // Row 2: ⌫ (col 0-1) + GÖNDER (col 2-4)
+      const backX = startX + 0 * (cellW + gap) + (cellW + gap) / 2;
+      const backY = padBaseY + 2 * (cellH + gap);
+      const backBg = this.add.rectangle(backX, backY, cellW * 2 + gap, cellH, 0xC0C0C0)
+        .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
+      const backTxt = this.add.text(backX, backY, '⌫ Sil', {
+        font: 'bold 14px system-ui', color: HEX.TEXT
+      }).setOrigin(0.5).setDepth(151);
+      backBg.setInteractive({ useHandCursor: true }).on('pointerdown', () => { SFX.click(); popDigit(); });
+      this.trackSprite(backBg); this.trackSprite(backTxt);
+
+      const sendX = startX + 3 * (cellW + gap) + (cellW + gap) / 2;
+      const sendBg = this.add.rectangle(sendX, backY, cellW * 3 + gap * 2, cellH, COLORS.ACCENT_OK, 0.85)
+        .setStrokeStyle(1, COLORS.DIALOG_BORDER).setDepth(150);
+      const sendTxt = this.add.text(sendX, backY, 'GÖNDER ↵', {
+        font: 'bold 14px system-ui', color: '#fff'
+      }).setOrigin(0.5).setDepth(151);
+      sendBg.setInteractive({ useHandCursor: true }).on('pointerdown', () => { SFX.click(); submit(); });
+      this.trackSprite(sendBg); this.trackSprite(sendTxt);
+    }
   }
 
   // 6. SLIDER DİRENEN
@@ -752,7 +807,9 @@ class TermsScene extends Phaser.Scene {
 
     createDialog(this, {
       title: 'ŞARTNAME — Madde 9/12',
-      body: 'Madde 9: Tüm sayfaları okuyarak sona ulaşın.\n(İpucu: → tuşunu basılı tut.)',
+      body: IS_TOUCH
+        ? 'Madde 9: Tüm sayfaları okuyarak sona ulaşın.\n(İpucu: "5x ATLA" butonuyla hızla geç.)'
+        : 'Madde 9: Tüm sayfaları okuyarak sona ulaşın.\n(İpucu: → tuşunu basılı tut.)',
       h: 280
     }).forEach(d => this.trackSprite(d));
 
@@ -769,8 +826,16 @@ class TermsScene extends Phaser.Scene {
       if (this.currentPage >= this.targetPage) this.nextTerm();
     };
 
-    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 95, 180, 40, 'DEVAM ET', () => advance(1));
+    const btn = makeButton(this, GAME_W / 2 - (IS_TOUCH ? 100 : 0), GAME_H / 2 + 95, 160, 40, 'DEVAM ET', () => advance(1));
     this.trackSprite(btn.bg); this.trackSprite(btn.txt);
+
+    // Touch için ekstra "5x ATLA" butonu (klavye → tuşunun touch alternatifi)
+    if (IS_TOUCH) {
+      const fastBtn = makeButton(this, GAME_W / 2 + 100, GAME_H / 2 + 95, 160, 40, '⏩ 5x ATLA', () => advance(5));
+      fastBtn.bg.setFillStyle(COLORS.ACCENT_WARN, 0.85);
+      fastBtn.txt.setColor('#fff');
+      this.trackSprite(fastBtn.bg); this.trackSprite(fastBtn.txt);
+    }
 
     this.rightKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
     this.skipFrameCounter = 0;
@@ -1121,6 +1186,44 @@ class ActionScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+    // Touch state
+    this.touchLeft = false;
+    this.touchRight = false;
+    this.touchJump = false;
+
+    // Touch on-screen buttons (only on touch devices)
+    if (IS_TOUCH) {
+      const makeTouchBtn = (x, y, label, color = 0xffffff, alpha = 0.25) => {
+        const c = this.add.circle(x, y, 42, color, alpha)
+          .setStrokeStyle(2, 0xffffff, 0.7)
+          .setScrollFactor(0).setDepth(200)
+          .setInteractive();
+        const t = this.add.text(x, y, label, {
+          font: 'bold 22px system-ui', color: '#fff'
+        }).setOrigin(0.5).setScrollFactor(0).setDepth(201);
+        return { circle: c, text: t };
+      };
+
+      const left = makeTouchBtn(70, GAME_H - 70, '◀');
+      const right = makeTouchBtn(180, GAME_H - 70, '▶');
+      const jump = makeTouchBtn(GAME_W - 80, GAME_H - 70, '▲', 0xFFE66D, 0.35);
+
+      const bindHold = (btn, setter) => {
+        btn.circle.on('pointerdown', () => { this[setter] = true; btn.circle.setFillStyle(0x4A90E2, 0.55); });
+        btn.circle.on('pointerup',   () => { this[setter] = false; btn.circle.setFillStyle(0xffffff, 0.25); });
+        btn.circle.on('pointerout',  () => { this[setter] = false; btn.circle.setFillStyle(0xffffff, 0.25); });
+      };
+      bindHold(left, 'touchLeft');
+      bindHold(right, 'touchRight');
+
+      jump.circle.on('pointerdown', () => {
+        this.touchJump = true;
+        jump.circle.setFillStyle(0x4A90E2, 0.55);
+      });
+      jump.circle.on('pointerup',   () => { jump.circle.setFillStyle(0xFFE66D, 0.35); });
+      jump.circle.on('pointerout',  () => { jump.circle.setFillStyle(0xFFE66D, 0.35); });
+    }
+
     this._escListener = (e) => {
       if (e.key === 'Escape' && !this.scene.isPaused()) {
         if (this.bgm) { this.bgm.stop(); this.bgm = null; }
@@ -1270,14 +1373,16 @@ class ActionScene extends Phaser.Scene {
     const onGround = this.player.body.touching.down || this.player.body.blocked.down;
 
     let vx = 0;
-    if (this.cursors.left.isDown) vx -= 220;
-    if (this.cursors.right.isDown) vx += 220;
+    if (this.cursors.left.isDown || this.touchLeft) vx -= 220;
+    if (this.cursors.right.isDown || this.touchRight) vx += 220;
     this.player.setVelocityX(vx);
 
-    if ((this.cursors.up.isDown || this.spaceKey.isDown) && onGround) {
+    if ((this.cursors.up.isDown || this.spaceKey.isDown || this.touchJump) && onGround) {
       this.player.setVelocityY(-460);
       SFX.jump();
     }
+    // Touch jump: tap-to-jump (consume after one frame so hold doesn't repeat-jump)
+    this.touchJump = false;
 
     // Düşme kontrolü
     if (this.player.y > GAME_H + 50) this.die();
