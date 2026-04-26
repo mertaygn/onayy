@@ -124,7 +124,20 @@ const I18N = {
     'term14.body': 'Aşağıdaki renklerden EN KOYU olanını seçin.',
     'term14.wrong': 'Yanlış renk.',
     'term15.body': 'İnsan zekası testi.\nAşağıdaki ifadeyi hesaplayıp sonucu yazın.',
-    'term15.wrong': 'Yanlış. Tekrar dene.'
+    'term15.wrong': 'Yanlış. Tekrar dene.',
+    'lore.company': 'TEKNOSAFİR LTD. ŞTİ.',
+    'lore.tagline': 'Güvenli onaylar, mutlu kullanıcılar.',
+    'lore.contractVersion': 'Sözleşme v12.7.4 — Geçerli: bugün',
+    'lore.companySig': '— TeknoSafir Hukuk Departmanı',
+    'lore.narratorMsgs': [
+      'Sistem: Kullanıcı dikkatleri ölçülüyor...',
+      'Bilgi: Sözleşmeyi okumayan %94 kullanıcı buradan geçmiştir.',
+      'Uyarı: Bu noktadan sonra sorumluluk size aittir.',
+      'Bildirim: TeknoSafir size güvenir. Belki.',
+      'Sistem: Onayınız depolandı. Tekrar onay alacağız zaten.',
+      'İpucu: Aceleci olmak hata payını artırır.',
+      'TeknoSafir: Kullanıcı sadakati doğrulanıyor...'
+    ]
   },
   en: {
     'boot.title': 'USER AGREEMENT',
@@ -203,7 +216,20 @@ const I18N = {
     'term14.body': 'Pick the DARKEST color below.',
     'term14.wrong': 'Wrong color.',
     'term15.body': 'Human intelligence test.\nCompute the expression and type the result.',
-    'term15.wrong': 'Wrong. Try again.'
+    'term15.wrong': 'Wrong. Try again.',
+    'lore.company': 'TEKNOSAFİR INC.',
+    'lore.tagline': 'Safe consents. Happy users.',
+    'lore.contractVersion': 'Agreement v12.7.4 — Effective: today',
+    'lore.companySig': '— TeknoSafir Legal Department',
+    'lore.narratorMsgs': [
+      'System: measuring user attention...',
+      'Info: 94% of users pass through without reading.',
+      'Warning: Beyond this point, responsibility is yours.',
+      'Notice: TeknoSafir trusts you. Maybe.',
+      'System: Consent stored. We will ask again anyway.',
+      'Tip: Haste increases error rate.',
+      'TeknoSafir: verifying user loyalty...'
+    ]
   }
 };
 
@@ -527,11 +553,28 @@ class BootScene extends Phaser.Scene {
   create() {
     makeDesktopBackground(this);
 
+    // Company branding above dialog
+    this.add.text(GAME_W / 2, GAME_H / 2 - 200, t('lore.company'), {
+      font: 'bold 18px system-ui',
+      color: '#FFE66D',
+      stroke: '#000', strokeThickness: 2
+    }).setOrigin(0.5);
+    this.add.text(GAME_W / 2, GAME_H / 2 - 180, t('lore.tagline'), {
+      font: 'italic 12px system-ui',
+      color: '#aac'
+    }).setOrigin(0.5);
+
     createDialog(this, {
       title: t('boot.title'),
       body: t('boot.body'),
       h: 280
     });
+
+    // Contract version subtle
+    this.add.text(GAME_W / 2, GAME_H / 2 + 50, t('lore.contractVersion'), {
+      font: 'italic 10px system-ui',
+      color: '#888'
+    }).setOrigin(0.5);
 
     let starting = false;
     const start = () => {
@@ -715,6 +758,28 @@ class TermsScene extends Phaser.Scene {
     this.cameras.main.fadeOut(180, 240, 240, 245);
     this.cameras.main.once('camerafadeoutcomplete', () => {
       this.cameras.main.fadeIn(180, 240, 240, 245);
+      // Random narrator message ~%30 ihtimalle
+      if (Phaser.Math.Between(1, 100) <= 30) {
+        const msgs = I18N[LANG]['lore.narratorMsgs'] || [];
+        if (msgs.length > 0) {
+          const msg = Phaser.Utils.Array.GetRandom(msgs);
+          const narr = this.add.text(GAME_W / 2, 80, msg, {
+            font: 'italic 12px system-ui',
+            color: '#FFE66D',
+            backgroundColor: '#0F1622',
+            padding: { x: 10, y: 5 }
+          }).setOrigin(0.5).setDepth(900).setAlpha(0);
+          this.tweens.add({
+            targets: narr, alpha: 1, duration: 200,
+            onComplete: () => {
+              this.tweens.add({
+                targets: narr, alpha: 0, duration: 400, delay: 1800,
+                onComplete: () => narr.destroy()
+              });
+            }
+          });
+        }
+      }
       this.loadTerm(this.currentTerm + 1);
     });
   }
@@ -1919,6 +1984,14 @@ class GameOverScene extends Phaser.Scene {
 
     // Win celebration: confetti
     if (this.won) spawnConfetti(this, 80);
+
+    // Şirket imzası — alt kısım
+    this.add.text(w / 2, h - 60, t('lore.companySig'), {
+      font: 'italic 11px system-ui', color: '#888'
+    }).setOrigin(0.5);
+    this.add.text(w / 2, h - 45, t('lore.company'), {
+      font: 'bold 11px system-ui', color: '#FFE66D'
+    }).setOrigin(0.5);
 
     this._handler = (e) => {
       if (e.key === 'r' || e.key === 'R') {
