@@ -183,7 +183,36 @@ const I18N = {
     'term19.wrong': 'Sıra bozuldu.',
     'term20.body': 'Madde 20: Ok DOĞRU yöne baktığında DUR\'a tıkla.',
     'term20.target': 'Hedef yön',
-    'term20.stop': 'DUR'
+    'term20.stop': 'DUR',
+    'term21.body': 'Madde 21: Yazıyı oku, ama RENGİNİ tıkla.\n(Stroop testi — beyninizi yoracak.)',
+    'term21.wrong': 'Renk değil, yazı tıkladın.',
+    'term22.body': 'Madde 22: 5 yapay pop-up kapat.\nGerçek "Onayla" en son.',
+    'term22.fakeBtn': 'Onayla',
+    'term23.body': 'Madde 23: Cursor\'u kırmızı duvarlara dokunmadan yeşil hedefe götür.',
+    'term23.wall': 'Duvara çarptın.',
+    'term24.body': 'Madde 24: Aşağıdaki 6 buton var. Sadece YEŞİL olanları tıkla.\n(Yanıltıcılar var.)',
+    'term24.wrong': 'Yanlış renk.',
+    'term25.body': 'Madde 25: Butonları 1\'den 9\'a SIRAYLA tıkla.\nYanlış sıra → reset.',
+    'term25.wrong': 'Sıra bozuldu.',
+    'term26.body': 'Madde 26: İki kaydırıcıyı aynı değere getirin (±2 tolerans).',
+    'term26.diff': 'Fark',
+    'term27.body': 'Madde 27: Belirtilen kelimeyi YAZIN ve ENTER\'a basın.',
+    'term27.wrong': 'Yanlış girdi.',
+    'term28.body': 'Madde 28: 4 vuruşa zamanlı tıkla. (Düzenli ritim.)',
+    'term28.tooFast': 'Çok hızlı.',
+    'term28.tooSlow': 'Çok yavaş.',
+    'term29.body': 'Madde 29: Cursor 5 nokta üstünden geçsin (tıklamadan).',
+    'term29.label': 'Geçilen',
+    'term30.body': 'Madde 30: Aşağıdaki yıldızlar arasında DİĞERLERİNDEN FARKLI olanı bul.',
+    'term30.wrong': 'Yanlış. Dikkat.',
+    'tilt.title': '⚠ TEKNOSAFİR İK',
+    'tilt.msgs': [
+      'Sakin ol. Şartname seni rahatsız etmek için tasarlanmadı. (Belki.)',
+      'Bilgi: 47 kullanıcı bu noktada vazgeçti. Sen vazgeçme.',
+      'Tilt mı oldun? Bu da bir veri olarak kayıt edildi.',
+      'Sistem: Hata oranınız ortalamanın üstünde. Devam edin.',
+      'Hatırlatma: TeknoSafir öfkenizi anlıyor. Anlayışlı bir şirket.'
+    ]
   },
   en: {
     'boot.title': 'USER AGREEMENT',
@@ -321,7 +350,36 @@ const I18N = {
     'term19.wrong': 'Sequence broken.',
     'term20.body': 'Article 20: Click STOP when the arrow points to the TARGET.',
     'term20.target': 'Target direction',
-    'term20.stop': 'STOP'
+    'term20.stop': 'STOP',
+    'term21.body': 'Article 21: Read the word, but click its COLOR.\n(Stroop test — your brain will hurt.)',
+    'term21.wrong': 'You clicked the word, not the color.',
+    'term22.body': 'Article 22: Close 5 fake pop-ups.\nThe real "Agree" is at the end.',
+    'term22.fakeBtn': 'Agree',
+    'term23.body': 'Article 23: Move cursor to the green target without touching red walls.',
+    'term23.wall': 'Hit the wall.',
+    'term24.body': 'Article 24: 6 buttons below. Click ONLY GREEN ones.\n(Decoys included.)',
+    'term24.wrong': 'Wrong color.',
+    'term25.body': 'Article 25: Click buttons 1 through 9 IN ORDER.\nWrong order → reset.',
+    'term25.wrong': 'Order broken.',
+    'term26.body': 'Article 26: Set both sliders to the same value (±2 tolerance).',
+    'term26.diff': 'Diff',
+    'term27.body': 'Article 27: Type the displayed word and press ENTER.',
+    'term27.wrong': 'Wrong input.',
+    'term28.body': 'Article 28: Click on 4 beats. (Steady rhythm.)',
+    'term28.tooFast': 'Too fast.',
+    'term28.tooSlow': 'Too slow.',
+    'term29.body': 'Article 29: Hover cursor over 5 points (no clicking).',
+    'term29.label': 'Passed',
+    'term30.body': 'Article 30: Find the star DIFFERENT from the others.',
+    'term30.wrong': 'Wrong. Look closer.',
+    'tilt.title': '⚠ TEKNOSAFİR HR',
+    'tilt.msgs': [
+      'Stay calm. The contract is not designed to annoy you. (Maybe.)',
+      'Info: 47 users gave up at this point. Do not give up.',
+      'Tilted? This too has been recorded as data.',
+      'System: Your error rate is above average. Keep going.',
+      'Reminder: TeknoSafir understands your rage. Empathetic company.'
+    ]
   }
 };
 
@@ -770,9 +828,10 @@ class TermsScene extends Phaser.Scene {
 
     // Term order — Normal: sıralı 1-12; Hardcore: pool'lardan rastgele 12 (toplam 20'den)
     if (MODE === 'hardcore') {
-      const easy = Phaser.Utils.Array.Shuffle([1, 2, 3, 4, 13, 17]).slice(0, 4);
-      const med  = Phaser.Utils.Array.Shuffle([5, 6, 7, 8, 14, 16, 19]).slice(0, 4);
-      const hard = Phaser.Utils.Array.Shuffle([9, 10, 11, 12, 15, 18, 20]).slice(0, 4);
+      // Pool 30 termden rastgele 12 (4 easy + 4 medium + 4 hard)
+      const easy = Phaser.Utils.Array.Shuffle([1, 2, 3, 4, 13, 17, 24, 25, 30]).slice(0, 4);
+      const med  = Phaser.Utils.Array.Shuffle([5, 6, 7, 8, 14, 16, 19, 21, 26, 28, 29]).slice(0, 4);
+      const hard = Phaser.Utils.Array.Shuffle([9, 10, 11, 12, 15, 18, 20, 22, 23, 27]).slice(0, 4);
       this.termOrder = [...easy, ...med, ...hard];
     } else {
       this.termOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -804,6 +863,11 @@ class TermsScene extends Phaser.Scene {
       window.removeEventListener('keydown', this._escListener);
       this._escListener = null;
     }
+    if (this._term27Handler) {
+      window.removeEventListener('keydown', this._term27Handler);
+      this._term27Handler = null;
+    }
+    this.input.removeAllListeners('pointermove');
     this.clearTermArtifacts();
   }
 
@@ -1819,6 +1883,452 @@ class TermsScene extends Phaser.Scene {
   updateTerm20() {
     if (this._term20Arrow && this._term20Arrow.scene) {
       this._term20Arrow.rotation += 0.06;
+    }
+  }
+
+  // ============ TERM 21: STROOP RENK-YAZI ============
+  setupTerm21() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term21.body'),
+      h: 280
+    }).forEach(d => this.trackSprite(d));
+
+    const colorWords = [
+      { tr: 'KIRMIZI', en: 'RED', hex: 0xC70039 },
+      { tr: 'MAVİ', en: 'BLUE', hex: 0x4A90E2 },
+      { tr: 'YEŞİL', en: 'GREEN', hex: 0x2ECC71 },
+      { tr: 'SARI', en: 'YELLOW', hex: 0xFFE66D }
+    ];
+    // Yazı şu rengi söyler, görsel rengi başka
+    const wordIdx = Phaser.Math.Between(0, 3);
+    let visualIdx;
+    do { visualIdx = Phaser.Math.Between(0, 3); } while (visualIdx === wordIdx);
+    const word = colorWords[wordIdx];
+    const visualColor = colorWords[visualIdx].hex;
+
+    // Render: yazı = colorWords[wordIdx][LANG], renk = visualColor
+    const display = LANG === 'tr' ? word.tr : word.en;
+    const wordText = this.add.text(GAME_W / 2, GAME_H / 2 + 30, display, {
+      font: 'bold 48px system-ui',
+      color: '#' + visualColor.toString(16).padStart(6, '0'),
+      stroke: '#000', strokeThickness: 4
+    }).setOrigin(0.5);
+    this.trackSprite(wordText);
+
+    // 4 buton (renk swatch'ları)
+    const startX = GAME_W / 2 - 165;
+    colorWords.forEach((c, i) => {
+      const x = startX + i * 110;
+      const sw = this.add.rectangle(x, GAME_H / 2 + 110, 90, 50, c.hex)
+        .setStrokeStyle(2, 0xffffff, 0.6).setInteractive({ useHandCursor: true });
+      sw.on('pointerdown', () => {
+        SFX.click();
+        if (i === visualIdx) this.nextTerm();
+        else { this.flashError(t('term21.wrong')); this.time.delayedCall(400, () => this.loadTerm(this.currentTerm)); }
+      });
+      this.trackSprite(sw);
+    });
+  }
+
+  // ============ TERM 22: POP-UP BOMBASI ============
+  setupTerm22() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term22.body'),
+      h: 240
+    }).forEach(d => this.trackSprite(d));
+
+    let popupCount = 0;
+    const totalFakes = 5;
+
+    const spawnPopup = () => {
+      const px = Phaser.Math.Between(150, GAME_W - 150);
+      const py = Phaser.Math.Between(GAME_H / 2 + 60, GAME_H - 100);
+      const items = createDialog(this, {
+        x: px, y: py, w: 220, h: 100,
+        title: '⚠',
+        body: ''
+      });
+      const isReal = (popupCount === totalFakes);
+      const btn = makeButton(this, px, py + 20, 110, 28, isReal ? t('btn.agree') : t('term22.fakeBtn'), () => {
+        items.forEach(s => { try { s.destroy(); } catch (_) {} });
+        try { btn.bg.destroy(); btn.txt.destroy(); } catch (_) {}
+        if (isReal) this.nextTerm();
+        else {
+          popupCount++;
+          spawnPopup();
+        }
+      });
+      items.push(btn.bg, btn.txt);
+      items.forEach(s => this.trackSprite(s));
+    };
+
+    spawnPopup();
+  }
+
+  // ============ TERM 23: MAZE (cursor duvar) ============
+  setupTerm23() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term23.body'),
+      h: 200
+    }).forEach(d => this.trackSprite(d));
+
+    // Bölge: dialog altında
+    const zoneTop = GAME_H / 2 + 60;
+    const zoneBot = GAME_H - 80;
+
+    // Başlangıç noktası (sol)
+    const startCircle = this.add.circle(80, (zoneTop + zoneBot) / 2, 14, COLORS.BTN_HOVER)
+      .setStrokeStyle(2, 0xffffff);
+    this.trackSprite(startCircle);
+
+    // Hedef (sağ)
+    const goal = this.add.rectangle(GAME_W - 80, (zoneTop + zoneBot) / 2, 50, 50, COLORS.ACCENT_OK, 0.5)
+      .setStrokeStyle(2, COLORS.ACCENT_OK);
+    this.trackSprite(goal);
+
+    // Duvarlar (kırmızı dikdörtgenler)
+    const walls = [
+      { x: 250, y: zoneTop + 60, w: 20, h: 100 },
+      { x: 400, y: zoneBot - 60, w: 20, h: 100 },
+      { x: 550, y: zoneTop + 80, w: 20, h: 80 },
+      { x: 700, y: zoneBot - 80, w: 20, h: 80 },
+      { x: 850, y: zoneTop + 60, w: 20, h: 100 }
+    ];
+    const wallObjs = walls.map(w => {
+      const r = this.add.rectangle(w.x, w.y, w.w, w.h, COLORS.SPIKE).setStrokeStyle(1, 0xffffff, 0.4);
+      this.trackSprite(r);
+      return r;
+    });
+
+    let started = false;
+    let cleared = false;
+
+    // Pointer hareketi
+    this.input.on('pointermove', (pointer) => {
+      if (cleared) return;
+      // Başlangıç noktasına gel → başla
+      if (!started) {
+        const dx = pointer.x - startCircle.x;
+        const dy = pointer.y - startCircle.y;
+        if (Math.sqrt(dx * dx + dy * dy) < 20) {
+          started = true;
+          startCircle.setFillStyle(COLORS.ACCENT_OK);
+        }
+        return;
+      }
+      // Duvar çarpışması
+      for (const w of wallObjs) {
+        if (Phaser.Geom.Rectangle.Contains(w.getBounds(), pointer.x, pointer.y)) {
+          this.flashError(t('term23.wall'));
+          this.time.delayedCall(300, () => this.loadTerm(this.currentTerm));
+          cleared = true;
+          return;
+        }
+      }
+      // Hedef
+      if (Phaser.Geom.Rectangle.Contains(goal.getBounds(), pointer.x, pointer.y)) {
+        cleared = true;
+        this.nextTerm();
+      }
+    });
+  }
+
+  // ============ TERM 24: ÇOKLU SEÇİM (yeşilleri tıkla) ============
+  setupTerm24() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term24.body'),
+      h: 240
+    }).forEach(d => this.trackSprite(d));
+
+    // 6 buton: 3 yeşil, 3 farklı renk
+    const items = [
+      { color: COLORS.ACCENT_OK, isCorrect: true },
+      { color: COLORS.SPIKE, isCorrect: false },
+      { color: COLORS.ACCENT_OK, isCorrect: true },
+      { color: COLORS.ACCENT_WARN, isCorrect: false },
+      { color: COLORS.ACCENT_OK, isCorrect: true },
+      { color: COLORS.BTN_HOVER, isCorrect: false }
+    ];
+    Phaser.Utils.Array.Shuffle(items);
+
+    let correctClicks = 0;
+    const totalCorrect = 3;
+
+    items.forEach((it, i) => {
+      const x = GAME_W / 2 - 250 + (i % 3) * 250;
+      const y = GAME_H / 2 + 70 + Math.floor(i / 3) * 70;
+      const sw = this.add.rectangle(x, y, 200, 50, it.color)
+        .setStrokeStyle(2, 0xffffff, 0.5).setInteractive({ useHandCursor: true });
+      sw.on('pointerdown', () => {
+        SFX.click();
+        if (it.isCorrect) {
+          sw.setStrokeStyle(3, 0xffffff, 1);
+          sw.disableInteractive();
+          correctClicks++;
+          if (correctClicks === totalCorrect) this.nextTerm();
+        } else {
+          this.flashError(t('term24.wrong'));
+          this.time.delayedCall(400, () => this.loadTerm(this.currentTerm));
+        }
+      });
+      this.trackSprite(sw);
+    });
+  }
+
+  // ============ TERM 25: 1-9 SIRAYLA ============
+  setupTerm25() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term25.body'),
+      h: 240
+    }).forEach(d => this.trackSprite(d));
+
+    // 9 buton karışık dağıtılmış
+    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    Phaser.Utils.Array.Shuffle(numbers);
+    let expected = 1;
+
+    numbers.forEach((n, i) => {
+      const col = i % 3, row = Math.floor(i / 3);
+      const x = GAME_W / 2 - 110 + col * 110;
+      const y = GAME_H / 2 + 50 + row * 60;
+      const btn = makeButton(this, x, y, 90, 50, n.toString(), () => {
+        if (n === expected) {
+          btn.bg.setFillStyle(COLORS.ACCENT_OK);
+          btn.txt.setColor('#fff');
+          btn.bg.disableInteractive();
+          expected++;
+          if (expected > 9) this.time.delayedCall(200, () => this.nextTerm());
+        } else {
+          this.flashError(t('term25.wrong'));
+          this.time.delayedCall(400, () => this.loadTerm(this.currentTerm));
+        }
+      });
+      this.trackSprite(btn.bg); this.trackSprite(btn.txt);
+    });
+  }
+
+  // ============ TERM 26: ÇİFT SLIDER (eşitle) ============
+  setupTerm26() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term26.body'),
+      h: 200
+    }).forEach(d => this.trackSprite(d));
+
+    const trackW = 320;
+    const minX = GAME_W / 2 - trackW / 2;
+    const maxX = GAME_W / 2 + trackW / 2;
+
+    const makeSlider = (y, startVal, color) => {
+      const track = this.add.rectangle(GAME_W / 2, y, trackW, 6, 0xCCCCCC);
+      this.trackSprite(track);
+      const knob = this.add.circle(minX + (startVal / 100) * trackW, y, 12, color)
+        .setStrokeStyle(2, 0xFFFFFF);
+      knob.setInteractive({ draggable: true, useHandCursor: true });
+      this.input.setDraggable(knob);
+      this.trackSprite(knob);
+      return { knob, getValue: () => Math.round(((knob.x - minX) / trackW) * 100) };
+    };
+
+    const a = makeSlider(GAME_H / 2 + 60, Phaser.Math.Between(15, 45), COLORS.BTN_HOVER);
+    const b = makeSlider(GAME_H / 2 + 100, Phaser.Math.Between(60, 90), COLORS.ACCENT_WARN);
+
+    const diffText = this.add.text(GAME_W / 2, GAME_H / 2 + 140, '', {
+      font: 'bold 16px system-ui', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(diffText);
+
+    const checkDiff = () => {
+      const d = Math.abs(a.getValue() - b.getValue());
+      diffText.setText(`${t('term26.diff')}: ${d}`);
+      if (d <= 2) this.nextTerm();
+    };
+    a.knob.on('drag', (p, dx) => { a.knob.x = Phaser.Math.Clamp(dx, minX, maxX); checkDiff(); });
+    b.knob.on('drag', (p, dx) => { b.knob.x = Phaser.Math.Clamp(dx, minX, maxX); checkDiff(); });
+    checkDiff();
+  }
+
+  // ============ TERM 27: KELIME YAZ ============
+  setupTerm27() {
+    const wordsTr = ['ONAY', 'KABUL', 'SUSTUM', 'TAMAM', 'OLDU'];
+    const wordsEn = ['YES', 'AGREE', 'SURE', 'OKAY', 'FINE'];
+    const target = Phaser.Utils.Array.GetRandom(LANG === 'tr' ? wordsTr : wordsEn);
+
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term27.body'),
+      h: 280
+    }).forEach(d => this.trackSprite(d));
+
+    this.add.text(GAME_W / 2, GAME_H / 2 + 20, target, {
+      font: 'bold 36px monospace', color: HEX.TEXT,
+      backgroundColor: '#FFE66D', padding: { x: 12, y: 6 }
+    }).setOrigin(0.5);
+    const targetText = this.children.list[this.children.list.length - 1];
+    this.trackSprite(targetText);
+
+    let typed = '';
+    const inputBg = this.add.rectangle(GAME_W / 2, GAME_H / 2 + 90, 220, 36, COLORS.INPUT_BG)
+      .setStrokeStyle(1, COLORS.DIALOG_BORDER);
+    const inputText = this.add.text(GAME_W / 2, GAME_H / 2 + 90, '_', {
+      font: 'bold 22px monospace', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(inputBg); this.trackSprite(inputText);
+
+    this._term27Handler = (e) => {
+      if (e.key === 'Enter') {
+        if (typed.toUpperCase() === target) this.nextTerm();
+        else { this.flashError(t('term27.wrong')); this.time.delayedCall(400, () => this.loadTerm(this.currentTerm)); }
+      } else if (e.key === 'Backspace') {
+        typed = typed.slice(0, -1);
+        inputText.setText(typed || '_');
+      } else if (/^[a-zA-ZçğıöşüÇĞİÖŞÜ]$/.test(e.key) && typed.length < target.length + 2) {
+        typed += e.key.toUpperCase();
+        inputText.setText(typed);
+        SFX.typing();
+      }
+    };
+    window.addEventListener('keydown', this._term27Handler);
+  }
+
+  // ============ TERM 28: RİTİM (4 vuruş) ============
+  setupTerm28() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term28.body'),
+      h: 240
+    }).forEach(d => this.trackSprite(d));
+
+    // 4 nokta (her vuruş için bir)
+    const dots = [];
+    for (let i = 0; i < 4; i++) {
+      const x = GAME_W / 2 - 90 + i * 60;
+      const dot = this.add.circle(x, GAME_H / 2 + 40, 18, 0xCCCCCC).setStrokeStyle(2, 0xffffff, 0.6);
+      this.trackSprite(dot);
+      dots.push(dot);
+    }
+
+    // Beat: 600 ms aralıklı vuruş
+    let beatIndex = 0;
+    let lastBeatTime = 0;
+    const BEAT_MS = 600;
+    const TOL_MS = 200;
+
+    // Otomatik metronom (görsel)
+    let metroIdx = 0;
+    this.termInterval = this.time.addEvent({
+      delay: BEAT_MS, loop: true,
+      callback: () => {
+        // Pulse metronom dot
+        const d = dots[metroIdx % 4];
+        if (d && d.scene) {
+          d.setFillStyle(COLORS.BTN_HOVER);
+          this.tweens.add({ targets: d, scale: 1.4, duration: 100, yoyo: true,
+            onComplete: () => { if (d.scene && metroIdx % 4 !== beatIndex) d.setFillStyle(0xCCCCCC); } });
+        }
+        metroIdx++;
+      }
+    });
+
+    const btn = makeButton(this, GAME_W / 2, GAME_H / 2 + 110, 220, 50, '🥁 TIK', () => {
+      const now = this.time.now;
+      const expectedTime = lastBeatTime + BEAT_MS * (beatIndex);
+      // İlk vuruş her zaman OK
+      if (beatIndex === 0) {
+        lastBeatTime = now;
+        dots[beatIndex].setFillStyle(COLORS.ACCENT_OK);
+        beatIndex++;
+        return;
+      }
+      const dt = now - lastBeatTime;
+      if (Math.abs(dt - BEAT_MS) <= TOL_MS) {
+        lastBeatTime = now;
+        dots[beatIndex].setFillStyle(COLORS.ACCENT_OK);
+        beatIndex++;
+        if (beatIndex >= 4) this.time.delayedCall(200, () => this.nextTerm());
+      } else {
+        this.flashError(dt < BEAT_MS - TOL_MS ? t('term28.tooFast') : t('term28.tooSlow'));
+        this.time.delayedCall(400, () => this.loadTerm(this.currentTerm));
+      }
+    });
+    this.trackSprite(btn.bg); this.trackSprite(btn.txt);
+  }
+
+  // ============ TERM 29: HOVER 5 NOKTA ============
+  setupTerm29() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term29.body'),
+      h: 200
+    }).forEach(d => this.trackSprite(d));
+
+    let passed = 0;
+    const total = 5;
+    const counterText = this.add.text(GAME_W / 2, GAME_H / 2 + 30, `${t('term29.label')}: 0/${total}`, {
+      font: 'bold 18px system-ui', color: HEX.TEXT
+    }).setOrigin(0.5);
+    this.trackSprite(counterText);
+
+    // 5 nokta rastgele yerlerde
+    const dots = [];
+    for (let i = 0; i < total; i++) {
+      const x = Phaser.Math.Between(120, GAME_W - 120);
+      const y = Phaser.Math.Between(GAME_H / 2 + 80, GAME_H - 80);
+      const c = this.add.circle(x, y, 16, COLORS.BTN_HOVER).setStrokeStyle(2, 0xffffff);
+      c.passed = false;
+      this.trackSprite(c);
+      dots.push(c);
+    }
+
+    this.input.on('pointermove', (pointer) => {
+      dots.forEach(d => {
+        if (d.passed) return;
+        const dx = pointer.x - d.x;
+        const dy = pointer.y - d.y;
+        if (Math.sqrt(dx * dx + dy * dy) < 18) {
+          d.passed = true;
+          d.setFillStyle(COLORS.ACCENT_OK);
+          SFX.click();
+          passed++;
+          counterText.setText(`${t('term29.label')}: ${passed}/${total}`);
+          if (passed >= total) this.time.delayedCall(300, () => this.nextTerm());
+        }
+      });
+    });
+  }
+
+  // ============ TERM 30: FARKLI YILDIZ ============
+  setupTerm30() {
+    createDialog(this, {
+      title: t('shartname.label', { n: this.currentTerm + 1 }),
+      body: t('term30.body'),
+      h: 200
+    }).forEach(d => this.trackSprite(d));
+
+    // 3x3 ızgara, 8 yıldız aynı + 1 farklı (renk, boyut, veya rotasyon)
+    const oddIdx = Phaser.Math.Between(0, 8);
+    for (let i = 0; i < 9; i++) {
+      const col = i % 3, row = Math.floor(i / 3);
+      const x = GAME_W / 2 - 100 + col * 100;
+      const y = GAME_H / 2 + 30 + row * 70;
+      const isOdd = (i === oddIdx);
+      const star = this.add.text(x, y, '★', {
+        font: (isOdd ? '32' : '36') + 'px system-ui',
+        color: isOdd ? '#FFD700' : '#FFE66D'
+      }).setOrigin(0.5);
+      if (isOdd) star.rotation = 0.3;
+      star.setInteractive({ useHandCursor: true });
+      star.on('pointerdown', () => {
+        SFX.click();
+        if (isOdd) this.nextTerm();
+        else { this.flashError(t('term30.wrong')); this.time.delayedCall(400, () => this.loadTerm(this.currentTerm)); }
+      });
+      this.trackSprite(star);
     }
   }
 
