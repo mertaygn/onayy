@@ -150,14 +150,87 @@ function makeButton(scene, x, y, w, h, label, onClick) {
   }).setOrigin(0.5);
 
   bg.setInteractive({ useHandCursor: true })
-    .on('pointerover', () => { bg.setFillStyle(COLORS.BTN_HOVER); txt.setColor(HEX.TEXT_LIGHT); SFX.hover(); })
-    .on('pointerout', () => { bg.setFillStyle(COLORS.BTN_NORMAL); txt.setColor(HEX.TEXT); })
-    .on('pointerdown', () => { SFX.click(); onClick(bg, txt); });
+    .on('pointerover', () => {
+      bg.setFillStyle(COLORS.BTN_HOVER);
+      txt.setColor(HEX.TEXT_LIGHT);
+      SFX.hover();
+      // Micro-bounce game-feel
+      scene.tweens.killTweensOf([bg, txt]);
+      scene.tweens.add({ targets: [bg, txt], scale: 1.05, duration: 80, ease: 'Sine.out' });
+    })
+    .on('pointerout', () => {
+      bg.setFillStyle(COLORS.BTN_NORMAL);
+      txt.setColor(HEX.TEXT);
+      scene.tweens.killTweensOf([bg, txt]);
+      scene.tweens.add({ targets: [bg, txt], scale: 1.0, duration: 100, ease: 'Sine.out' });
+    })
+    .on('pointerdown', () => {
+      SFX.click();
+      scene.tweens.killTweensOf([bg, txt]);
+      scene.tweens.add({ targets: [bg, txt], scale: 0.95, duration: 60, yoyo: true, ease: 'Sine.out' });
+      onClick(bg, txt);
+    });
 
   return {
     bg, txt,
     setPosition: (nx, ny) => { bg.setPosition(nx, ny); txt.setPosition(nx, ny); },
     setSize: (nw, nh) => { bg.setSize(nw, nh); }
+  };
+}
+
+// ---------- BGM (procedural chiptune for Action scene) ----------
+function startBGM() {
+  const Ctx = window.AudioContext || window.webkitAudioContext;
+  if (!Ctx) return null;
+  const ctx = window.__audioCtx ||= new Ctx();
+  if (ctx.state === 'suspended') ctx.resume();
+
+  const master = ctx.createGain();
+  master.gain.value = 0.06;
+  master.connect(ctx.destination);
+
+  // Bass + lead pattern, minor key feel — short tense loop
+  const bass = [110, 110, 165, 110, 130.81, 110, 165, 130.81];
+  const lead = [261.63, 329.63, 392, 329.63, 311.13, 392, 466.16, 392];
+  const bpm = 130;
+  const stepMs = (60000 / bpm) / 2; // 8th notes
+  let i = 0;
+  let stopped = false;
+
+  const playStep = () => {
+    if (stopped) return;
+    const t = ctx.currentTime;
+    // Bass
+    const bo = ctx.createOscillator();
+    const bg = ctx.createGain();
+    bo.type = 'square';
+    bo.frequency.value = bass[i % bass.length];
+    bg.gain.setValueAtTime(0.5, t);
+    bg.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    bo.connect(bg).connect(master);
+    bo.start(t); bo.stop(t + 0.2);
+    // Lead (her 2. step'te)
+    if (i % 2 === 0) {
+      const lo = ctx.createOscillator();
+      const lg = ctx.createGain();
+      lo.type = 'triangle';
+      lo.frequency.value = lead[i % lead.length];
+      lg.gain.setValueAtTime(0.6, t);
+      lg.gain.exponentialRampToValueAtTime(0.001, t + 0.15);
+      lo.connect(lg).connect(master);
+      lo.start(t); lo.stop(t + 0.15);
+    }
+    i++;
+  };
+
+  const interval = setInterval(playStep, stepMs);
+  return {
+    stop: () => {
+      stopped = true;
+      clearInterval(interval);
+      master.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.3);
+      setTimeout(() => master.disconnect(), 400);
+    }
   };
 }
 
@@ -771,34 +844,35 @@ class ActionScene extends Phaser.Scene {
   }
 
   create() {
+    const WORLD_W = 3500;
+    const groundY = GAME_H - 40;
+
     // Background
-    this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, COLORS.ACTION_BG);
+    this.add.rectangle(WORLD_W / 2, GAME_H / 2, WORLD_W, GAME_H, COLORS.ACTION_BG);
     // Decorative stars
-    for (let i = 0; i < 50; i++) {
-      const x = Phaser.Math.Between(0, GAME_W);
+    for (let i = 0; i < 140; i++) {
+      const x = Phaser.Math.Between(0, WORLD_W);
       const y = Phaser.Math.Between(0, GAME_H - 100);
-      this.add.circle(x, y, Phaser.Math.FloatBetween(0.5, 1.5), 0xffffff, Phaser.Math.FloatBetween(0.2, 0.8));
+      this.add.circle(x, y, Phaser.Math.FloatBetween(0.5, 1.6), 0xffffff, Phaser.Math.FloatBetween(0.18, 0.85));
     }
 
     this.cameras.main.fadeIn(300, 0, 0, 0);
 
-    // Player sprite
+    // ========== Sprite üretim ==========
     let g = this.add.graphics();
     g.fillStyle(COLORS.PLAYER, 1);
     g.fillRoundedRect(0, 0, 28, 36, 4);
     g.fillStyle(0x000000, 1);
-    g.fillCircle(20, 12, 2); // göz
+    g.fillCircle(20, 12, 2);
     g.generateTexture('player', 28, 36);
     g.destroy();
 
-    // Spike
     g = this.add.graphics();
     g.fillStyle(COLORS.SPIKE, 1);
     g.fillTriangle(0, 30, 30, 30, 15, 0);
     g.generateTexture('spike', 30, 30);
     g.destroy();
 
-    // Flag
     g = this.add.graphics();
     g.fillStyle(0x6b6b6b, 1);
     g.fillRect(0, 0, 4, 60);
@@ -807,25 +881,63 @@ class ActionScene extends Phaser.Scene {
     g.generateTexture('flag', 30, 60);
     g.destroy();
 
-    // Ground
-    this.platforms = this.physics.add.staticGroup();
-    const groundY = GAME_H - 40;
+    // Checkpoint flag (mavi)
+    g = this.add.graphics();
+    g.fillStyle(0x6b6b6b, 1);
+    g.fillRect(0, 0, 4, 60);
+    g.fillStyle(0x4A90E2, 1);
+    g.fillTriangle(4, 5, 30, 15, 4, 25);
+    g.generateTexture('checkflag', 30, 60);
+    g.destroy();
+
+    // Bonus star (sarı) — collectible
+    g = this.add.graphics();
+    g.fillStyle(COLORS.FLAG, 1);
+    const cx = 12, cy = 12, outer = 11, inner = 5;
+    const pts = [];
+    for (let k = 0; k < 10; k++) {
+      const r = k % 2 === 0 ? outer : inner;
+      const a = (k * Math.PI) / 5 - Math.PI / 2;
+      pts.push(new Phaser.Geom.Point(cx + Math.cos(a) * r, cy + Math.sin(a) * r));
+    }
+    g.fillPoints(pts, true);
+    g.generateTexture('bonusStar', 24, 24);
+    g.destroy();
+
     g = this.add.graphics();
     g.fillStyle(COLORS.PLATFORM, 1);
     g.fillRect(0, 0, 100, 20);
     g.generateTexture('platBlock', 100, 20);
     g.destroy();
 
-    // Floor
-    for (let x = 50; x < GAME_W * 2; x += 100) {
-      // 2 boşluk bırak (zıplama gerek)
-      if (x === 550 || x === 1250) continue;
-      this.platforms.create(x, groundY, 'platBlock');
+    // ========== Level layout — 3 segment ==========
+    this.platforms = this.physics.add.staticGroup();
+
+    // Floor (3500px boyunca, gap'lerle)
+    const gaps = [
+      [550, 700],    // segment 1 sonu
+      [1280, 1430],  // segment 2 sonu — büyük gap
+      [2200, 2330],  // segment 3 ortası
+      [2900, 3000]   // segment 3 sonu
+    ];
+    for (let x = 50; x < WORLD_W; x += 100) {
+      const inGap = gaps.some(([a, b]) => x >= a - 50 && x <= b);
+      if (!inGap) this.platforms.create(x, groundY, 'platBlock');
     }
-    // Ek platformlar
-    this.platforms.create(700, groundY - 100, 'platBlock');
-    this.platforms.create(1100, groundY - 130, 'platBlock');
-    this.platforms.create(1500, groundY - 80, 'platBlock');
+
+    // Aerial platforms — cumulative challenge
+    // Segment 1 (kolay)
+    this.platforms.create(620, groundY - 130, 'platBlock');
+    // Segment 2 (orta) — gap üzerinde
+    this.platforms.create(1350, groundY - 100, 'platBlock');
+    this.platforms.create(1700, groundY - 160, 'platBlock');
+    this.platforms.create(1950, groundY - 100, 'platBlock');
+    // Segment 3 (zor) — multi-tier
+    this.platforms.create(2270, groundY - 130, 'platBlock');
+    this.platforms.create(2500, groundY - 200, 'platBlock');
+    this.platforms.create(2750, groundY - 130, 'platBlock');
+    this.platforms.create(2960, groundY - 180, 'platBlock');
+    this.platforms.create(3200, groundY - 110, 'platBlock');
 
     // Player
     this.player = this.physics.add.sprite(80, groundY - 100, 'player');
@@ -833,58 +945,156 @@ class ActionScene extends Phaser.Scene {
     this.player.setBounce(0.05);
     this.physics.add.collider(this.player, this.platforms);
 
-    // Spikes
+    // ========== Spikes — segment-bazlı zorluk ==========
     this.spikes = this.physics.add.staticGroup();
-    [350, 500, 850, 1300, 1650].forEach(sx => {
-      const spike = this.spikes.create(sx, groundY - 15, 'spike');
-      spike.body.setSize(24, 22).setOffset(3, 8);
+    const spikePositions = [
+      // Seg 1 — tek spike'lar
+      { x: 350, y: groundY - 15 },
+      { x: 480, y: groundY - 15 },
+      // Seg 2 — çift spike, daha çok
+      { x: 850, y: groundY - 15 },
+      { x: 880, y: groundY - 15 },
+      { x: 1080, y: groundY - 15 },
+      { x: 1180, y: groundY - 15 },
+      { x: 1210, y: groundY - 15 },
+      // Seg 3 — yoğun
+      { x: 1500, y: groundY - 15 },
+      { x: 1830, y: groundY - 15 },
+      { x: 1860, y: groundY - 15 },
+      { x: 1890, y: groundY - 15 },
+      { x: 2080, y: groundY - 15 },
+      { x: 2400, y: groundY - 15 },
+      { x: 2670, y: groundY - 15 },
+      { x: 2700, y: groundY - 15 },
+      { x: 3100, y: groundY - 15 },
+      { x: 3130, y: groundY - 15 }
+    ];
+    spikePositions.forEach(({ x, y }) => {
+      const sp = this.spikes.create(x, y, 'spike');
+      sp.body.setSize(24, 22).setOffset(3, 8);
     });
     this.physics.add.overlap(this.player, this.spikes, () => this.die(), null, this);
 
-    // Flag (end)
-    this.flag = this.physics.add.staticSprite(1850, groundY - 30, 'flag');
+    // ========== Bonus collectibles (sarı yıldız → +1 can max 5) ==========
+    this.bonuses = this.physics.add.staticGroup();
+    [[750, groundY - 180], [1700, groundY - 200], [2500, groundY - 250], [3000, groundY - 220]]
+      .forEach(([x, y]) => {
+        const b = this.bonuses.create(x, y, 'bonusStar');
+        this.tweens.add({
+          targets: b,
+          y: y - 8,
+          duration: 800,
+          yoyo: true,
+          repeat: -1,
+          ease: 'Sine.inOut'
+        });
+      });
+    this.physics.add.overlap(this.player, this.bonuses, (_, b) => this.collectBonus(b), null, this);
+
+    // ========== Checkpoint (mavi flag, segment 2 sonu) ==========
+    this.checkpoint = this.physics.add.staticSprite(2150, groundY - 30, 'checkflag');
+    this.checkpoint.activated = false;
+    this.physics.add.overlap(this.player, this.checkpoint, () => this.activateCheckpoint(), null, this);
+
+    // ========== Bitiş bayrağı ==========
+    this.flag = this.physics.add.staticSprite(3380, groundY - 30, 'flag');
     this.physics.add.overlap(this.player, this.flag, () => this.win(), null, this);
 
-    // World bounds
-    this.physics.world.setBounds(0, 0, 2000, GAME_H);
-    this.cameras.main.setBounds(0, 0, 2000, GAME_H);
+    // ========== World bounds ==========
+    this.physics.world.setBounds(0, 0, WORLD_W, GAME_H);
+    this.cameras.main.setBounds(0, 0, WORLD_W, GAME_H);
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
 
-    // HUD
+    // ========== HUD ==========
     this.livesText = this.add.text(20, 16, '', {
       font: 'bold 22px system-ui', color: '#fff', stroke: '#000', strokeThickness: 3
     }).setScrollFactor(0).setDepth(100);
     this.updateHUD();
 
+    this.distText = this.add.text(GAME_W / 2, 16, '', {
+      font: 'bold 14px system-ui', color: '#aaa'
+    }).setOrigin(0.5, 0).setScrollFactor(0).setDepth(100);
+
     this.add.text(GAME_W - 20, 16, 'AKSİYON FAZI', {
       font: 'bold 16px system-ui', color: '#FFE66D'
     }).setOrigin(1, 0).setScrollFactor(0).setDepth(100);
 
-    // Input
+    // ========== Input ==========
     this.cursors = this.input.keyboard.createCursorKeys();
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-    // ESC pause (DOM)
     this._escListener = (e) => {
       if (e.key === 'Escape' && !this.scene.isPaused()) {
+        if (this.bgm) { this.bgm.stop(); this.bgm = null; }
         this.scene.pause();
         this.scene.launch('Pause', { from: 'Action' });
       }
     };
     window.addEventListener('keydown', this._escListener);
 
+    // BGM start (resume desteği için)
+    this.bgm = startBGM();
+    this.events.on('resume', () => { if (!this.bgm && !this.gameOver) this.bgm = startBGM(); });
+
     this.events.once('shutdown', () => {
       if (this._escListener) {
         window.removeEventListener('keydown', this._escListener);
         this._escListener = null;
       }
+      if (this.bgm) { this.bgm.stop(); this.bgm = null; }
     });
 
-    // Falling check
+    // Spawn point
     this.spawnX = 80;
     this.spawnY = groundY - 100;
+    this.worldW = WORLD_W;
 
     this.gameOver = false;
+  }
+
+  collectBonus(b) {
+    b.destroy();
+    SFX.accept();
+    if (this.lives < STARTING_LIVES) {
+      this.lives++;
+      this.updateHUD();
+      // "+1" pop
+      const popup = this.add.text(b.x, b.y - 20, '+1 ♥', {
+        font: 'bold 18px system-ui', color: '#2ECC71', stroke: '#000', strokeThickness: 3
+      }).setOrigin(0.5);
+      this.tweens.add({
+        targets: popup,
+        y: b.y - 60,
+        alpha: 0,
+        duration: 700,
+        onComplete: () => popup.destroy()
+      });
+    }
+  }
+
+  activateCheckpoint() {
+    if (this.checkpoint.activated) return;
+    this.checkpoint.activated = true;
+    this.spawnX = this.checkpoint.x;
+    this.spawnY = this.checkpoint.y - 50;
+    SFX.accept();
+    // Visual feedback
+    const popup = this.add.text(this.checkpoint.x, this.checkpoint.y - 80, 'KONTROL NOKTASI', {
+      font: 'bold 14px system-ui', color: '#4A90E2', stroke: '#000', strokeThickness: 3
+    }).setOrigin(0.5);
+    this.tweens.add({
+      targets: popup,
+      y: this.checkpoint.y - 120,
+      alpha: 0,
+      duration: 1500,
+      onComplete: () => popup.destroy()
+    });
+    this.tweens.add({
+      targets: this.checkpoint,
+      scale: 1.3,
+      duration: 200,
+      yoyo: true
+    });
   }
 
   updateHUD() {
@@ -898,6 +1108,7 @@ class ActionScene extends Phaser.Scene {
     this.updateHUD();
     if (this.lives <= 0) {
       this.gameOver = true;
+      if (this.bgm) { this.bgm.stop(); this.bgm = null; }
       this.cameras.main.fadeOut(400, 0, 0, 0);
       this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('GameOver', { won: false }));
       return;
@@ -911,6 +1122,7 @@ class ActionScene extends Phaser.Scene {
   win() {
     if (this.gameOver) return;
     this.gameOver = true;
+    if (this.bgm) { this.bgm.stop(); this.bgm = null; }
     SFX.win();
     this.cameras.main.fadeOut(500, 255, 230, 100);
     this.cameras.main.once('camerafadeoutcomplete', () => this.scene.start('GameOver', { won: true }));
@@ -932,6 +1144,12 @@ class ActionScene extends Phaser.Scene {
 
     // Düşme kontrolü
     if (this.player.y > GAME_H + 50) this.die();
+
+    // Mesafe HUD
+    if (this.distText) {
+      const pct = Math.min(100, Math.round((this.player.x / this.worldW) * 100));
+      this.distText.setText(`İLERLEME: ${pct}%`);
+    }
   }
 }
 
